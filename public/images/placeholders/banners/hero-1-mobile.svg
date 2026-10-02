@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1440" viewBox="0 0 1080 1440">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8b7a0"/><stop offset="1" stop-color="#8d5e4a"/></linearGradient>
+    <radialGradient id="r" cx="70%" cy="30%" r="60%"><stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1080" height="1440" fill="url(#g)"/><rect width="1080" height="1440" fill="url(#r)"/>
+  <circle cx="777.6" cy="648" r="302.40000000000003" fill="#ffffff" fill-opacity="0.12"/>
+  <circle cx="842.4" cy="864" r="172.8" fill="#ffffff" fill-opacity="0.1"/>
+  <text x="64.8" y="172.79999999999998" font-family="Arial, Helvetica, sans-serif" font-size="65" font-weight="700" fill="#ffffff" fill-opacity="0.9">Natural Lifting</text>
+  <text x="64.8" y="259.2" font-family="Arial, Helvetica, sans-serif" font-size="43" fill="#ffffff" fill-opacity="0.75">Демо (mobile)</text>
+</svg>

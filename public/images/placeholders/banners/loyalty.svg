@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="600" viewBox="0 0 1920 600">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbe9ee"/><stop offset="1" stop-color="#e5a4bb"/></linearGradient>
+    <radialGradient id="r" cx="70%" cy="30%" r="60%"><stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1920" height="600" fill="url(#g)"/><rect width="1920" height="600" fill="url(#r)"/>
+  <circle cx="1382.3999999999999" cy="270" r="168.00000000000003" fill="#ffffff" fill-opacity="0.12"/>
+  <circle cx="1497.6000000000001" cy="360" r="96" fill="#ffffff" fill-opacity="0.1"/>
+  <text x="115.19999999999999" y="72" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#ffffff" fill-opacity="0.9">Merea Club</text>
+  <text x="115.19999999999999" y="108" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#ffffff" fill-opacity="0.75">Программа лояльности</text>
+</svg>

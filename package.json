@@ -1,0 +1,50 @@
+{
+  "name": "merea-headless",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "setup": "prisma generate && prisma db push && tsx prisma/seed.ts",
+    "shopify:check": "node scripts/shopify-check.mjs",
+    "placeholders": "node scripts/generate-placeholders.mjs",
+    "shopify:storefront-token": "node scripts/shopify-storefront-token.mjs",
+    "postinstall": "prisma generate",
+    "db:sqlite": "prisma generate --schema prisma/schema.sqlite.prisma && prisma db push --schema prisma/schema.sqlite.prisma && tsx prisma/seed.ts",
+    "validate:graphql": "node scripts/validate-graphql.mjs",
+    "shopify:import-catalog": "node scripts/shopify-import-catalog.mjs",
+    "shopify:publish": "node scripts/shopify-publish.mjs"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "@vercel/blob": "^2.8.0",
+    "bcryptjs": "^3.0.2",
+    "clsx": "^2.1.1",
+    "jose": "^6.1.0",
+    "lucide-react": "^0.544.0",
+    "next": "^15.5.4",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "sharp": "^0.34.4",
+    "swiper": "^12.0.2",
+    "tailwind-merge": "^3.3.1",
+    "zod": "^4.1.11",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^24.6.0",
+    "@types/react": "^19.1.17",
+    "@types/react-dom": "^19.1.11",
+    "prisma": "^6.16.2",
+    "tailwindcss": "^4.1.13",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2"
+  }
+}

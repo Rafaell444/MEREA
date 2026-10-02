@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 480 720">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a1f2b"/><stop offset="1" stop-color="#7a1f2b" stop-opacity="0.75"/></linearGradient></defs>
+  <rect width="480" height="720" fill="url(#g)"/>
+  <rect x="24" y="24" width="432" height="672" rx="18" fill="#ffffff22"/>
+  <g transform="translate(0 60) scale(1)" fill="#ffffff" fill-opacity="0.9" stroke="#ffffff"><path d="M160 170 L205 140 C220 170 260 170 275 140 L320 170 L345 250 L310 262 L310 440 L170 440 L170 262 L135 250 Z" /><circle cx="240" cy="330" r="34" fill="none" stroke-width="8"/></g>
+  <text x="240" y="640" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#ffffff">KIDS · 678Z</text>
+  <text x="240" y="672" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#ffffff" fill-opacity="0.7">DEMO · M</text>
+</svg>

@@ -1,0 +1,308 @@
+// Merea headless CMS schema.
+// SQLite locally (zero setup). Switch `provider` to "postgresql" for production.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  name         String
+  role         String     @default("editor") // owner | admin | editor
+  active       Boolean    @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  auditLogs    AuditLog[]
+}
+
+model AuditLog {
+  id        String     @id @default(cuid())
+  user      AdminUser? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  details   String? // JSON string
+  ip        String?
+  createdAt DateTime   @default(now())
+
+  @@index([createdAt])
+}
+
+/// Generic key/value site settings (JSON string values)
+model Setting {
+  key       String   @id
+  value     String // JSON
+  updatedAt DateTime @updatedAt
+}
+
+/// Top announcement marquee items
+model Announcement {
+  id        String    @id @default(cuid())
+  text      String
+  href      String?
+  enabled   Boolean   @default(true)
+  sortOrder Int       @default(0)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+/// Home page sections (ordered content blocks)
+model HomeSection {
+  id        String   @id @default(cuid())
+  type      String // hero | product_carousel | banner | split_banners | promo_strip | editorial | category_tiles | text
+  title     String?
+  subtitle  String?
+  config    String   @default("{}") // JSON
+  enabled   Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HeroSlide {
+  id          String   @id @default(cuid())
+  sectionId   String? // optional link to a HomeSection of type hero
+  title       String
+  subtitle    String?
+  note        String?
+  ctaText     String?
+  ctaHref     String?
+  image       String
+  imageMobile String?
+  video       String?
+  textTheme   String   @default("light") // light (white text) | dark
+  align       String   @default("left")
+  enabled     Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// Navigation tree. menu = "women" | "girls" | "service"
+model MenuItem {
+  id         String     @id @default(cuid())
+  menu       String
+  parent     MenuItem?  @relation("MenuTree", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId   String?
+  children   MenuItem[] @relation("MenuTree")
+  label      String
+  href       String?
+  badgeText  String?
+  badgeColor String? // hex
+  textColor  String? // hex
+  image      String? // promo image for level-2 panels
+  enabled    Boolean    @default(true)
+  sortOrder  Int        @default(0)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@index([menu, parentId])
+}
+
+model FooterColumn {
+  id        String       @id @default(cuid())
+  title     String
+  enabled   Boolean      @default(true)
+  sortOrder Int          @default(0)
+  links     FooterLink[]
+}
+
+model FooterLink {
+  id        String       @id @default(cuid())
+  column    FooterColumn @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  columnId  String
+  label     String
+  href      String
+  enabled   Boolean      @default(true)
+  sortOrder Int          @default(0)
+}
+
+/// Popups & marketing overlays
+model Popup {
+  id            String    @id @default(cuid())
+  key           String    @unique // cookie | newsletter | custom-xyz
+  name          String
+  enabled       Boolean   @default(true)
+  title         String
+  body          String?
+  image         String?
+  ctaText       String?
+  ctaHref       String?
+  secondaryText String?
+  delaySeconds  Int       @default(10)
+  scrollPercent Int       @default(0)
+  frequencyDays Int       @default(7)
+  showOnPaths   String    @default("[]") // JSON array of path prefixes, [] = everywhere
+  excludePaths  String    @default("[]")
+  config        String    @default("{}") // JSON (e.g. discount code, consent texts)
+  startsAt      DateTime?
+  endsAt        DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+/// Category pages: URL path -> Shopify collection + page content
+model CategoryPage {
+  id               String   @id @default(cuid())
+  path             String   @unique // e.g. zhenschinam/nizhnee-bele/byustgaltery
+  title            String // h1
+  navTitle         String? // short name for tiles/breadcrumbs
+  collectionHandle String? // Shopify collection handle
+  parentPath       String?
+  image            String? // tile image
+  seoTitle         String?
+  seoDescription   String?
+  seoText          String? // long HTML text below products
+  bannerImage      String?
+  bannerTitle      String?
+  bannerText       String?
+  showInTiles      Boolean  @default(true)
+  enabled          Boolean  @default(true)
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([parentPath])
+}
+
+/// Promo badges shown on product tiles, matched by Shopify product tag
+model PromoBadge {
+  id        String  @id @default(cuid())
+  tag       String  @unique // shopify tag, e.g. "3=4", "new", "sale"
+  label     String
+  textColor String  @default("#80251D")
+  bgColor   String  @default("#FFFFFF")
+  position  String  @default("bottom") // bottom | top
+  enabled   Boolean @default(true)
+  sortOrder Int     @default(0)
+}
+
+model Page {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  body           String // HTML
+  seoTitle       String?
+  seoDescription String?
+  published      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Store {
+  id        String  @id @default(cuid())
+  name      String
+  city      String
+  address   String
+  hours     String?
+  phone     String?
+  lat       Float?
+  lng       Float?
+  enabled   Boolean @default(true)
+  sortOrder Int     @default(0)
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String? // footer | popup | checkout
+  consent   Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id            String   @id @default(cuid())
+  productHandle String
+  author        String
+  rating        Int
+  title         String?
+  body          String
+  approved      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  @@index([productHandle, approved])
+}
+
+model NotifyRequest {
+  id            String   @id @default(cuid())
+  email         String
+  productHandle String
+  variantId     String
+  size          String?
+  notified      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  topic     String?
+  message   String
+  orderNo   String?
+  handled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  url       String
+  filename  String
+  mime      String
+  size      Int
+  width     Int?
+  height    Int?
+  alt       String?
+  createdAt DateTime @default(now())
+}
+
+/// Demo customers (used only while Shopify is not connected). Shopify customer accounts replace this.
+model DemoCustomer {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  passwordHash     String
+  firstName        String?
+  lastName         String?
+  phone            String?
+  birthday         String?
+  gender           String?
+  acceptsMarketing Boolean  @default(true)
+  addresses        String   @default("[]") // JSON array of addresses
+  orders           String   @default("[]") // JSON array of demo orders
+  bonusBalance     Int      @default(0)
+  bonusHistory     String   @default("[]") // JSON
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+/// Return requests created from the account area (visible in admin inbox)
+model ReturnRequest {
+  id          String   @id @default(cuid())
+  email       String
+  orderNumber String
+  items       String   // JSON [{title, quantity, reason}]
+  reason      String?
+  comment     String?
+  status      String   @default("new") // new | approved | rejected | refunded
+  createdAt   DateTime @default(now())
+}
+
+/// Size guide tables (per category group)
+model SizeGuide {
+  id        String @id @default(cuid())
+  key       String @unique // bras | panties | clothing | girls
+  title     String
+  content   String // JSON {columns:[], rows:[[]]} or HTML
+  sortOrder Int    @default(0)
+}

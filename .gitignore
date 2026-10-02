@@ -1,0 +1,20 @@
+node_modules
+.next
+out
+.env
+.env.local
+*.db
+*.db-journal
+/prisma/dev.db*
+/public/uploads/*
+!/public/uploads/.gitkeep
+.DS_Store
+npm-debug.log*
+
+# local tooling / skills caches
+.agents/
+.claude/skills/
+dev-server.log
+.tmp-mock-data.mjs
+tsconfig.tsbuildinfo
+.env.vercel

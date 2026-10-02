@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1440" viewBox="0 0 1200 1440">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5c1d2a"/><stop offset="1" stop-color="#2b0b12"/></linearGradient>
+    <radialGradient id="r" cx="70%" cy="30%" r="60%"><stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1200" height="1440" fill="url(#g)"/><rect width="1200" height="1440" fill="url(#r)"/>
+  <circle cx="864" cy="648" r="336.00000000000006" fill="#ffffff" fill-opacity="0.12"/>
+  <circle cx="936" cy="864" r="192" fill="#ffffff" fill-opacity="0.1"/>
+  <text x="72" y="172.79999999999998" font-family="Arial, Helvetica, sans-serif" font-size="65" font-weight="700" fill="#ffffff" fill-opacity="0.9">Влюбляясь в бордовый</text>
+  <text x="72" y="259.2" font-family="Arial, Helvetica, sans-serif" font-size="43" fill="#ffffff" fill-opacity="0.75">Редакционный блок · демо</text>
+</svg>

@@ -34,7 +34,7 @@ async function gql(query, variables = {}) {
 }
 
 const shapeFor = (sku) => { const s = sku.toUpperCase(); if (/^1Z/.test(s)) return "socks"; if (/^1K/.test(s)) return "swim"; if (/^(1TI|1RP|1RB|1RI|1FP|1RG|3RS|3TI)/.test(s)) return "bra"; if (/^(1SN|1SB|3SC|3SN)/.test(s)) return "panty"; if (/^(1GS|1GT|1PL|1GP|1PC)/.test(s)) return "pajama"; if (/^(1WP|1WS|3WP|3WS)/.test(s)) return "pants"; if (/^(1WG|3WG|3WA)/.test(s)) return "skirt"; if (/^3/.test(s)) return "kids"; return "top"; };
-const imageUrl = (sku, code, view) => siteUrl ? `${siteUrl}/images/placeholders/products/${shapeFor(sku)}-${code}-${view}.svg` : null;
+const imageUrl = (sku, code, view) => siteUrl ? `${siteUrl}/images/placeholders/products-png/${shapeFor(sku)}-${code}-${view}.png` : null;
 
 // ---- collections ----
 const existing = new Map();

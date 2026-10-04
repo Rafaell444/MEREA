@@ -67,7 +67,7 @@ for (const m of MODELS) {
     const hex = COLOR_NAMES[color.code]?.hex ?? color.hex;
     const tags = [...m.tags.map((t) => TAG_LABEL[t] ?? t), `model:${m.sku}`, `color:${color.code}`];
     const sizes = m.sizes;
-    const media = ["M", "F", "FI"].map((v) => imageUrl(m.sku, color.code, v)).filter(Boolean).map((src) => ({ originalSource: src, mediaContentType: "IMAGE", alt: `${m.title} — ${colorName}` }));
+    const media = ["M", "F", "FI"].map((v) => imageUrl(m.sku, color.code, v)).filter(Boolean).map((src) => ({ originalSource: src, contentType: "IMAGE", alt: `${m.title} — ${colorName}` }));
     const input = {
       handle, title: m.title, descriptionHtml: `<p>${m.description}</p>`, vendor: "Merea", productType: m.type, status: "ACTIVE", tags,
       productOptions: [{ name: "Цвет", values: [{ name: colorName }] }, { name: "Размер", values: sizes.map((s) => ({ name: s })) }],
@@ -86,7 +86,8 @@ for (const m of MODELS) {
     };
     if (dry) { console.log(`[dry] product ${handle} (${sizes.length} sizes)`); continue; }
     try {
-      const d = await gql(`mutation($input: ProductSetInput!){ productSet(input:$input, synchronous:true){ product{ id handle } userErrors{ field message } } }`, { input });
+      // identifier makes productSet an upsert by handle (create on first run, update afterwards)
+      const d = await gql(`mutation($input: ProductSetInput!, $identifier: ProductSetIdentifiers){ productSet(input:$input, identifier:$identifier, synchronous:true){ product{ id handle } userErrors{ field message } } }`, { input, identifier: { handle } });
       if (d.productSet.userErrors.length) { pe++; console.log(`✖ ${handle}: ${d.productSet.userErrors.map((e) => `${e.field?.join(".") ?? ""} ${e.message}`).join("; ")}`); }
       else { pc++; process.stdout.write(`\r✔ products: ${pc}`); }
     } catch (e) { pe++; console.log(`\n✖ ${handle}: ${e.message}`); }

@@ -1,4 +1,4 @@
-import { IN_CONTEXT } from "./client";
+import { IN_CONTEXT, INVENTORY_FIELD } from "./client";
 
 export const MONEY_FRAGMENT = /* GraphQL */ `
   fragment MoneyFields on MoneyV2 { amount currencyCode }
@@ -28,7 +28,7 @@ export const PRODUCT_CARD_FRAGMENT = /* GraphQL */ `
         id
         title
         availableForSale
-        quantityAvailable
+        ${INVENTORY_FIELD}
         price { ...MoneyFields }
         compareAtPrice { ...MoneyFields }
         selectedOptions { name value }
@@ -55,7 +55,7 @@ export const PRODUCT_FULL_FRAGMENT = /* GraphQL */ `
         title
         sku
         availableForSale
-        quantityAvailable
+        ${INVENTORY_FIELD}
         price { ...MoneyFields }
         compareAtPrice { ...MoneyFields }
         selectedOptions { name value }

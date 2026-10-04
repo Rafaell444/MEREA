@@ -31,7 +31,7 @@ async function gql(query, variables = {}) {
 
 const checks = [
   ["Магазин", `{ shop { name primaryDomain { url } paymentSettings { currencyCode } } }`, (d) => `${d.shop.name} · ${d.shop.primaryDomain.url} · ${d.shop.paymentSettings.currencyCode}`],
-  ["Товары (чтение)", `{ products(first: 3) { nodes { handle title variants(first: 1) { nodes { quantityAvailable } } } } }`, (d) => `${d.products.nodes.length} товара(ов), первый: ${d.products.nodes[0]?.title ?? "—"}`],
+  ["Товары (чтение)", `{ products(first: 3) { nodes { handle title variants(first: 1) { nodes { availableForSale } } } } }`, (d) => `${d.products.nodes.length} товара(ов), первый: ${d.products.nodes[0]?.title ?? "—"}`],
   ["Коллекции", `{ collections(first: 50) { nodes { handle title } } }`, (d) => `${d.collections.nodes.length}: ${d.collections.nodes.slice(0, 6).map((c) => c.handle).join(", ")}…`],
   ["Фильтры коллекции", `{ collections(first: 1) { nodes { handle products(first: 1) { filters { label } } } } }`, (d) => d.collections.nodes[0] ? `${d.collections.nodes[0].products.filters.map((f) => f.label).join(", ") || "фильтров нет"}` : "нет коллекций"],
   ["Поиск", `{ search(query: "a", first: 1, types: PRODUCT) { totalCount } }`, (d) => `totalCount=${d.search.totalCount}`],

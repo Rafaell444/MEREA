@@ -72,3 +72,9 @@ export async function shopInfo(): Promise<ShopInfo> {
   );
   return { name: data.shop.name, domain: data.shop.primaryDomain.url, currency: data.shop.paymentSettings.currencyCode, apiVersion: SHOPIFY_API_VERSION };
 }
+
+/**
+ * `quantityAvailable` needs the Storefront scope unauthenticated_read_product_inventory.
+ * Set SHOPIFY_READ_INVENTORY=true once that permission is enabled on the Headless app to get "low stock" indicators.
+ */
+export const INVENTORY_FIELD = process.env.SHOPIFY_READ_INVENTORY === "true" ? "quantityAvailable" : "";

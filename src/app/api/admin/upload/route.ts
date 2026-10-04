@@ -40,10 +40,12 @@ export async function POST(req: Request) {
   }
 
   let url: string;
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
+  // Vercel Blob token: default name, or the custom "MEREA" prefix chosen when the store was created
+  const blobToken = process.env.BLOB_READ_WRITE_TOKEN ?? process.env.MEREA_READ_WRITE_TOKEN;
+  if (blobToken) {
     // Vercel: serverless filesystem is read-only, store in Vercel Blob
     const { put } = await import("@vercel/blob");
-    const blob = await put(`uploads/${name}`, buffer, { access: "public", contentType: file.type, addRandomSuffix: false });
+    const blob = await put(`uploads/${name}`, buffer, { access: "public", contentType: file.type, addRandomSuffix: false, token: blobToken });
     url = blob.url;
   } else {
     await fs.writeFile(path.join(dir, name), buffer);

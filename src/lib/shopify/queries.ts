@@ -1,4 +1,4 @@
-import { IN_CONTEXT, INVENTORY_FIELD } from "./client";
+import { INVENTORY_FIELD } from "./client";
 
 export const MONEY_FRAGMENT = /* GraphQL */ `
   fragment MoneyFields on MoneyV2 { amount currencyCode }
@@ -74,7 +74,7 @@ export const PRODUCT_FULL_FRAGMENT = /* GraphQL */ `
 `;
 
 export const GET_PRODUCT = /* GraphQL */ `
-  query GetProduct($handle: String!) ${IN_CONTEXT} {
+  query GetProduct($handle: String!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     product(handle: $handle) { ...ProductFullFields }
   }
   ${PRODUCT_FULL_FRAGMENT}
@@ -82,7 +82,7 @@ export const GET_PRODUCT = /* GraphQL */ `
 
 /** Other colours of the same model are products sharing the same `model_code` metafield (or tag `model:<code>`). */
 export const GET_SIBLINGS = /* GraphQL */ `
-  query GetSiblings($query: String!) ${IN_CONTEXT} {
+  query GetSiblings($query: String!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     products(first: 30, query: $query) {
       nodes {
         handle
@@ -97,14 +97,14 @@ export const GET_SIBLINGS = /* GraphQL */ `
 `;
 
 export const GET_PRODUCTS_BY_HANDLES = /* GraphQL */ `
-  query GetProductsByHandles($query: String!, $first: Int!) ${IN_CONTEXT} {
+  query GetProductsByHandles($query: String!, $first: Int!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     products(first: $first, query: $query) { nodes { ...ProductCardFields } }
   }
   ${PRODUCT_CARD_FRAGMENT}
 `;
 
 export const GET_COLLECTION = /* GraphQL */ `
-  query GetCollection($handle: String!, $first: Int!, $after: String, $sortKey: ProductCollectionSortKeys, $reverse: Boolean, $filters: [ProductFilter!]) ${IN_CONTEXT} {
+  query GetCollection($handle: String!, $first: Int!, $after: String, $sortKey: ProductCollectionSortKeys, $reverse: Boolean, $filters: [ProductFilter!], $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       id
       handle
@@ -127,7 +127,7 @@ export const GET_COLLECTION = /* GraphQL */ `
 `;
 
 export const SEARCH_PRODUCTS = /* GraphQL */ `
-  query SearchProducts($query: String!, $first: Int!, $after: String, $sortKey: SearchSortKeys, $reverse: Boolean, $filters: [ProductFilter!]) ${IN_CONTEXT} {
+  query SearchProducts($query: String!, $first: Int!, $after: String, $sortKey: SearchSortKeys, $reverse: Boolean, $filters: [ProductFilter!], $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     search(query: $query, first: $first, after: $after, sortKey: $sortKey, reverse: $reverse, productFilters: $filters, types: PRODUCT) {
       totalCount
       pageInfo { hasNextPage endCursor }
@@ -139,7 +139,7 @@ export const SEARCH_PRODUCTS = /* GraphQL */ `
 `;
 
 export const PREDICTIVE_SEARCH = /* GraphQL */ `
-  query PredictiveSearch($query: String!) ${IN_CONTEXT} {
+  query PredictiveSearch($query: String!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     predictiveSearch(query: $query, limit: 6, types: [PRODUCT, COLLECTION, QUERY]) {
       queries { text }
       collections { handle title }
@@ -150,7 +150,7 @@ export const PREDICTIVE_SEARCH = /* GraphQL */ `
 `;
 
 export const GET_RECOMMENDATIONS = /* GraphQL */ `
-  query GetRecommendations($productId: ID!) ${IN_CONTEXT} {
+  query GetRecommendations($productId: ID!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     productRecommendations(productId: $productId, intent: RELATED) { ...ProductCardFields }
   }
   ${PRODUCT_CARD_FRAGMENT}
@@ -204,35 +204,35 @@ export const CART_FRAGMENT = /* GraphQL */ `
 `;
 
 export const CART_CREATE = /* GraphQL */ `
-  mutation CartCreate($input: CartInput) ${IN_CONTEXT} {
+  mutation CartCreate($input: CartInput, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     cartCreate(input: $input) { cart { ...CartFields } userErrors { field message } }
   }
   ${CART_FRAGMENT}
 `;
 export const CART_GET = /* GraphQL */ `
-  query CartGet($id: ID!) ${IN_CONTEXT} { cart(id: $id) { ...CartFields } }
+  query CartGet($id: ID!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) { cart(id: $id) { ...CartFields } }
   ${CART_FRAGMENT}
 `;
 export const CART_LINES_ADD = /* GraphQL */ `
-  mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) ${IN_CONTEXT} {
+  mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     cartLinesAdd(cartId: $cartId, lines: $lines) { cart { ...CartFields } userErrors { field message } }
   }
   ${CART_FRAGMENT}
 `;
 export const CART_LINES_UPDATE = /* GraphQL */ `
-  mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) ${IN_CONTEXT} {
+  mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     cartLinesUpdate(cartId: $cartId, lines: $lines) { cart { ...CartFields } userErrors { field message } }
   }
   ${CART_FRAGMENT}
 `;
 export const CART_LINES_REMOVE = /* GraphQL */ `
-  mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) ${IN_CONTEXT} {
+  mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) { cart { ...CartFields } userErrors { field message } }
   }
   ${CART_FRAGMENT}
 `;
 export const CART_DISCOUNT_UPDATE = /* GraphQL */ `
-  mutation CartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!) ${IN_CONTEXT} {
+  mutation CartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) { cart { ...CartFields } userErrors { field message } }
   }
   ${CART_FRAGMENT}
@@ -268,7 +268,7 @@ export const GET_CUSTOMER = /* GraphQL */ `
   }
 `;
 export const GET_CUSTOMER_ORDERS = /* GraphQL */ `
-  query GetCustomerOrders($token: String!) ${IN_CONTEXT} {
+  query GetCustomerOrders($token: String!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     customer(customerAccessToken: $token) {
       orders(first: 20, sortKey: PROCESSED_AT, reverse: true) {
         nodes {
@@ -334,7 +334,7 @@ export const DEFAULT_ADDRESS_UPDATE = /* GraphQL */ `
   }
 `;
 export const GET_CUSTOMER_ORDER = /* GraphQL */ `
-  query GetCustomerOrder($token: String!, $query: String!) ${IN_CONTEXT} {
+  query GetCustomerOrder($token: String!, $query: String!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     customer(customerAccessToken: $token) {
       orders(first: 1, query: $query) {
         nodes {

@@ -40,6 +40,8 @@ type RawCart = {
 const money = (m: RawMoney | null | undefined) => (m ? { amount: Number(m.amount), currencyCode: m.currencyCode } : null);
 const image = (i: RawImage | undefined) => (i ? { url: i.url, alt: i.altText ?? undefined, width: i.width ?? undefined, height: i.height ?? undefined } : null);
 
+// i18n: fallback error strings are translation sources; API routes wrap them with t(res.error).
+// i18n: t("Неверный e-mail или пароль") t("Не удалось создать аккаунт") t("Не удалось сохранить адрес")
 const SIZE_OPTION_NAMES = ["размер", "size", "taglia"];
 const COLOR_OPTION_NAMES = ["цвет", "color", "colour", "colore"];
 

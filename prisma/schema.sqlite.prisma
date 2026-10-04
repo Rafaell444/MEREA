@@ -1,4 +1,4 @@
-// Merea headless CMS schema.
+// Merey headless CMS schema.
 // SQLite locally (zero setup). Switch `provider` to "postgresql" for production.
 generator client {
   provider = "prisma-client-js"
@@ -305,4 +305,13 @@ model SizeGuide {
   title     String
   content   String // JSON {columns:[], rows:[[]]} or HTML
   sortOrder Int    @default(0)
+}
+
+/// Admin-editable translations. `source` is the Russian source string used in code / CMS content.
+model Translation {
+  id        String   @id @default(cuid())
+  source    String   @unique
+  ka        String?
+  en        String?
+  updatedAt DateTime @updatedAt
 }

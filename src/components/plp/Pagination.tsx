@@ -1,5 +1,6 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { cn } from "@/lib/utils";
+import { getT } from "@/lib/i18n/server";
 
 type Props = { page: number; pageSize: number; total: number; hasNext: boolean; basePath: string; params: URLSearchParams; nextCursor?: string | null };
 
@@ -10,7 +11,8 @@ function withPage(params: URLSearchParams, page: number) {
   return s ? `?${s}` : "";
 }
 
-export default function Pagination({ page, pageSize, total, hasNext, basePath, params, nextCursor }: Props) {
+export default async function Pagination({ page, pageSize, total, hasNext, basePath, params, nextCursor }: Props) {
+  const { t } = await getT();
   // Shopify collections paginate by cursor (no total count): render only "Показать еще" with ?after=<cursor>
   if (total < 0 || nextCursor) {
     if (!hasNext || !nextCursor) return null;
@@ -19,7 +21,7 @@ export default function Pagination({ page, pageSize, total, hasNext, basePath, p
     p.set("after", nextCursor);
     return (
       <div className="mt-10 flex justify-center">
-        <Link href={`${basePath}?${p}`} className="btn-outline h-11 px-8 text-xsm" scroll={false}>Показать еще</Link>
+        <Link href={`${basePath}?${p}`} className="btn-outline h-11 px-8 text-xsm" scroll={false}>{t("Показать еще")}</Link>
       </div>
     );
   }
@@ -34,10 +36,10 @@ export default function Pagination({ page, pageSize, total, hasNext, basePath, p
 
   return (
     <div className="mt-10 flex flex-col items-center gap-4">
-      {total > 0 && <p className="text-xsm text-gray-500">{from}–{to} из {total} товаров</p>}
+      {total > 0 && <p className="text-xsm text-gray-500">{t("{from}–{to} из {total}", { from, to, total })}</p>}
       {hasNext && (
         <Link href={`${basePath}${withPage(params, page + 1)}`} className="btn-outline h-11 px-8 text-xsm" scroll={false}>
-          Показать еще
+          {t("Показать еще")}
         </Link>
       )}
       <ul className="flex items-center gap-1">

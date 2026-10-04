@@ -18,3 +18,5 @@ dev-server.log
 .tmp-mock-data.mjs
 tsconfig.tsbuildinfo
 .env.vercel
+scripts/.i18n/
+.tmp-defaults.mjs

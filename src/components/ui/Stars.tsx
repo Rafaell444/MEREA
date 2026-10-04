@@ -1,9 +1,12 @@
+"use client";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 export default function Stars({ value = 0, size = 13, className }: { value?: number; size?: number; className?: string }) {
+  const t = useT();
   return (
-    <span className={cn("inline-flex gap-0.5", className)} aria-label={`${value} из 5`}>
+    <span className={cn("inline-flex gap-0.5", className)} aria-label={t("{value} из 5", { value })}>
       {[1, 2, 3, 4, 5].map((i) => {
         const fill = Math.max(0, Math.min(1, value - (i - 1)));
         return (

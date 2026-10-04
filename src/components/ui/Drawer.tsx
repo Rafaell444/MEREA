@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 type Props = {
   open: boolean;
@@ -34,6 +35,7 @@ export function useScrollLock(active: boolean) {
 }
 
 export default function Drawer({ open, onClose, side = "right", title, width = "w-full sm:w-[420px]", children, className, bodyClassName, hideHeader, overlayClassName, topOffset }: Props) {
+  const t = useT();
   const ref = useRef<HTMLDivElement>(null);
   useScrollLock(open);
 
@@ -59,7 +61,7 @@ export default function Drawer({ open, onClose, side = "right", title, width = "
         {!hideHeader && (
           <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
             <div className="text-sm font-bold">{title}</div>
-            <button aria-label="Закрыть" onClick={onClose} className="p-1 -mr-1 transition-transform hover:rotate-90 duration-300">
+            <button aria-label={t("Закрыть")} onClick={onClose} className="p-1 -mr-1 transition-transform hover:rotate-90 duration-300">
               <X size={18} strokeWidth={1.5} />
             </button>
           </div>

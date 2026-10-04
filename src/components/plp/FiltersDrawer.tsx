@@ -1,13 +1,15 @@
 "use client";
 import { useMemo, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Plus, SlidersHorizontal, Palette, Ruler, Layers, Tag, Check } from "lucide-react";
 import Drawer from "@/components/ui/Drawer";
 import { AccordionItem } from "@/components/ui/Accordion";
 import type { ProductFilter, SortKey } from "@/lib/catalog/types";
-import { cn, productsLabel } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useUI } from "@/store/ui";
+import { useT, usePath, useLocalizedRouter } from "@/lib/i18n/client";
 
+// i18n: t("По популярности") t("Сначала новинки") t("Цена: по возрастанию") t("Цена: по убыванию")
 const SORTS: { key: SortKey; label: string }[] = [
   { key: "RELEVANCE", label: "По популярности" },
   { key: "CREATED", label: "Сначала новинки" },
@@ -27,17 +29,18 @@ function keyOf(id: string) {
 
 /** "N товаров · Фильтры +" bar and the right-side sort & filter drawer. URL-driven (?sort=&f.color=…). */
 export function FiltersBar({ total, filters }: { total: number; filters: ProductFilter[] }) {
+  const t = useT();
   const { open } = useUI();
   const sp = useSearchParams();
   const activeCount = [...sp.keys()].filter((k) => k.startsWith("f.")).reduce((n, k) => n + sp.getAll(k).length, 0);
   return (
     <div className="flex justify-between py-5">
       <div className="flex-1 content-center">
-        <p className="text-xs text-gray-500">{total >= 0 ? productsLabel(total) : ""}</p>
+        <p className="text-xs text-gray-500">{total >= 0 ? t("Товаров: {n}", { n: total }) : ""}</p>
       </div>
       <div className="flex-1 text-right text-xsm">
         <button onClick={() => open("filters")} className="cursor-pointer font-medium text-black" disabled={!filters.length}>
-          Фильтры{activeCount > 0 && <span className="ml-1 text-gray-500">({activeCount})</span>}
+          {t("Фильтры")}{activeCount > 0 && <span className="ml-1 text-gray-500">({activeCount})</span>}
           <Plus size={10} className="ml-2 inline" />
         </button>
       </div>
@@ -46,9 +49,10 @@ export function FiltersBar({ total, filters }: { total: number; filters: Product
 }
 
 export default function FiltersDrawer({ total, filters }: { total: number; filters: ProductFilter[] }) {
+  const t = useT();
   const { drawer, close } = useUI();
-  const router = useRouter();
-  const pathname = usePathname();
+  const router = useLocalizedRouter();
+  const pathname = usePath();
   const sp = useSearchParams();
   const open = drawer === "filters";
 
@@ -85,15 +89,15 @@ export default function FiltersDrawer({ total, filters }: { total: number; filte
   const count = Object.values(sel).reduce((n, v) => n + v.length, 0);
 
   return (
-    <Drawer open={open} onClose={close} side="right" title="Сортировка и фильтры" width="w-full sm:w-[400px]">
+    <Drawer open={open} onClose={close} side="right" title={t("Сортировка и фильтры")} width="w-full sm:w-[400px]">
       <div className="flex h-full flex-col">
         <div className="flex-1 px-6">
-          <AccordionItem title={<span className="flex items-center gap-2"><SlidersHorizontal size={16} strokeWidth={1.5} /> Сортировать по</span>}>
+          <AccordionItem title={<span className="flex items-center gap-2"><SlidersHorizontal size={16} strokeWidth={1.5} /> {t("Сортировать по")}</span>}>
             <ul className="space-y-3">
               {SORTS.map((s) => (
                 <li key={s.key}>
                   <button onClick={() => setSort(s.key)} className="flex w-full items-center justify-between text-sm">
-                    <span className={cn(sort === s.key && "font-medium")}>{s.label}</span>
+                    <span className={cn(sort === s.key && "font-medium")}>{t(s.label)}</span>
                     <span className={cn("flex h-4 w-4 items-center justify-center rounded-full border", sort === s.key ? "border-black bg-black text-white" : "border-gray-300")}>{sort === s.key && <Check size={10} />}</span>
                   </button>
                 </li>
@@ -106,7 +110,7 @@ export default function FiltersDrawer({ total, filters }: { total: number; filte
             const Icon = ICONS[key] ?? Tag;
             const single = f.type === "PRICE_RANGE";
             return (
-              <AccordionItem key={f.id} title={<span className="flex items-center gap-2"><Icon size={16} strokeWidth={1.5} /> {f.label}</span>}>
+              <AccordionItem key={f.id} title={<span className="flex items-center gap-2"><Icon size={16} strokeWidth={1.5} /> {t(f.label)}</span>}>
                 <ul className={cn("flex flex-wrap gap-2", key === "size" && "gap-1.5")}>
                   {f.values.map((v) => {
                     const on = (sel[key] ?? []).includes(v.input);
@@ -122,7 +126,7 @@ export default function FiltersDrawer({ total, filters }: { total: number; filte
                           )}
                         >
                           {isColor && <span className="h-3 w-3 rounded-full border border-black/10" style={{ background: v.hex ?? colorHex(v.label) }} />}
-                          {v.label}
+                          {t(v.label)}
                           {f.type === "LIST" && v.count > 0 && <span className={cn("text-[10px]", on ? "text-white/70" : "text-gray-500")}>{v.count}</span>}
                         </button>
                       </li>
@@ -134,22 +138,15 @@ export default function FiltersDrawer({ total, filters }: { total: number; filte
           })}
         </div>
         <div className="border-t border-gray-200 px-6 py-5">
-          <button onClick={apply} className="btn-primary w-full">Посмотреть {total >= 0 ? `${total} результат${plural(total)}` : "результаты"}</button>
-          <button onClick={reset} className="mt-3 w-full text-center text-xsm underline underline-offset-4">Очистить фильтры{count > 0 && ` (${count})`}</button>
+          <button onClick={apply} className="btn-primary w-full">{total >= 0 ? t("Посмотреть результаты: {n}", { n: total }) : t("Посмотреть результаты")}</button>
+          <button onClick={reset} className="mt-3 w-full text-center text-xsm underline underline-offset-4">{t("Очистить фильтры")}{count > 0 && ` (${count})`}</button>
         </div>
       </div>
     </Drawer>
   );
 }
 
-function plural(n: number) {
-  const a = n % 100, b = n % 10;
-  if (a > 10 && a < 20) return "ов";
-  if (b > 1 && b < 5) return "а";
-  if (b === 1) return "";
-  return "ов";
-}
-
+// i18n: t("Черный") t("Белый") t("Серый") t("Бежевый") t("Розовый") t("Бордовый") t("Зеленый") t("Синий") t("Фиолетовый") t("Коричневый") t("Красный") t("Желтый")
 function colorHex(label: string) {
   const map: Record<string, string> = { Черный: "#111", Белый: "#fff", Серый: "#9a9a9a", Бежевый: "#d9b69a", Розовый: "#e8a9bd", Бордовый: "#5c1d2a", Зеленый: "#5b6b4a", Синий: "#1d2a4a", Фиолетовый: "#b9a7d6", Коричневый: "#5a3a2e", Красный: "#c62828", Желтый: "#f0d35e" };
   return map[label] ?? "#ddd";

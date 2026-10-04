@@ -5,6 +5,9 @@ import { db } from "@/lib/db";
 import type { AddressInput, CatalogProvider, Customer, CustomerAddress, CustomerOrder } from "./types";
 import { MODELS, mockImage } from "./mock-data";
 
+// i18n: error strings below are translation sources; API routes wrap them with t(res.error).
+// i18n: t("Неверный e-mail или пароль") t("Пользователь с таким e-mail уже зарегистрирован") t("Сессия истекла") t("E-mail уже используется") t("Адрес не найден")
+
 /* Demo customer accounts persisted in SQLite (DemoCustomer). Tokens are stateless HMAC tokens: "<id>.<sig>". */
 
 function secret() {
@@ -52,7 +55,7 @@ function demoOrders(firstName?: string, lastName?: string): CustomerOrder[] {
     const m = MODELS.find((x) => x.sku === sku)!;
     return { title: m.title, quantity: qty, variantTitle: size, image: mockImage(m.sku, color, "M"), price: { amount: m.price, currencyCode: "RUB" }, handle: `${m.slug}-${m.sku}-${color.toLowerCase()}` };
   };
-  const addr = { firstName, lastName, address1: "ул. Тверская, 12, кв. 34", city: "Москва", zip: "125009", country: "Россия", phone: "+7 900 000-00-00" };
+  const addr = { firstName, lastName, address1: "пр. Руставели, 12, кв. 34", city: "Тбилиси", zip: "0108", country: "Грузия", phone: "+995 555 00 00 00" };
   const o1 = [pick("1TI010V", "1905", "75C"), pick("1SB01V", "1905", "M", 2)];
   const o2 = [pick("1WP1569", "581Z", "M"), pick("1ML1569", "581Z", "M")];
   const sum = (l: ReturnType<typeof pick>[]) => l.reduce((s, x) => s + x.price.amount * x.quantity, 0);

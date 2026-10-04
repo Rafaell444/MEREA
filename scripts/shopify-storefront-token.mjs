@@ -24,7 +24,7 @@ const r = await fetch(`https://${domain}/admin/api/${version}/graphql.json`, {
   method: "POST",
   headers: { "Content-Type": "application/json", "X-Shopify-Access-Token": admin },
   body: JSON.stringify({
-    query: `mutation { storefrontAccessTokenCreate(input: { title: "Merea headless storefront" }) { storefrontAccessToken { accessToken title } userErrors { field message } } }`,
+    query: `mutation { storefrontAccessTokenCreate(input: { title: "Merey headless storefront" }) { storefrontAccessToken { accessToken title } userErrors { field message } } }`,
   }),
 });
 const j = await r.json();

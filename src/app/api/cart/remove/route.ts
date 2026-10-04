@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 const schema = z.object({ lineIds: z.array(z.string().min(1).max(200)).min(1).max(50) });
 
 export async function POST(req: Request) {
-  const g = guard(req);
+  const g = await guard(req);
   if (g) return g;
   try {
     const body = schema.parse(await req.json());

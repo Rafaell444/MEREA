@@ -12,7 +12,7 @@ const SECTIONS: { title: string; fields: Field[] }[] = [
     fields: [
       { name: "siteName", label: "Название сайта", type: "text", width: "half" },
       { name: "tagline", label: "Слоган", type: "text", width: "half" },
-      { name: "logo", label: "Логотип (пусто = текстовый логотип MEREA)", type: "image" },
+      { name: "logo", label: "Логотип (пусто = текстовый логотип MEREY)", type: "image" },
       { name: "headerTransparentOnHome", label: "Прозрачная шапка на главной (поверх баннера)", type: "boolean" },
       { name: "showGirlsMenu", label: "Показывать раздел «Девочкам»", type: "boolean" },
     ],

@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, FreeMode } from "swiper/modules";
@@ -10,6 +10,7 @@ import type { ProductCard } from "@/lib/catalog/types";
 import type { PromoBadge } from "@/lib/cms/content";
 import ProductTile from "./ProductTile";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 type Props = {
   title?: string | null;
@@ -22,6 +23,7 @@ type Props = {
 };
 
 export default function ProductCarousel({ title, subtitle, href, products, badges, className, headingClassName }: Props) {
+  const t = useT();
   const ref = useRef<SwiperType | null>(null);
   if (!products.length) return null;
   return (
@@ -29,14 +31,14 @@ export default function ProductCarousel({ title, subtitle, href, products, badge
       {(title || subtitle) && (
         <div className={cn("mb-5 flex items-end justify-between px-4 sm:px-10", headingClassName)}>
           <div>
-            {subtitle && <p className="text-xsm text-gray-500 mb-1">{subtitle}</p>}
-            {title && (href ? <Link href={href} className="text-xl font-bold sm:text-2xl hover:underline underline-offset-4">{title}</Link> : <h2 className="text-xl font-bold sm:text-2xl">{title}</h2>)}
+            {subtitle && <p className="text-xsm text-gray-500 mb-1">{t(subtitle)}</p>}
+            {title && (href ? <Link href={href} className="text-xl font-bold sm:text-2xl hover:underline underline-offset-4">{t(title)}</Link> : <h2 className="text-xl font-bold sm:text-2xl">{t(title)}</h2>)}
           </div>
           <div className="hidden items-center gap-2 sm:flex">
-            <button aria-label="Назад" onClick={() => ref.current?.slidePrev()} className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 transition-colors hover:border-black hover:bg-black hover:text-white">
+            <button aria-label={t("Назад")} onClick={() => ref.current?.slidePrev()} className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 transition-colors hover:border-black hover:bg-black hover:text-white">
               <ChevronLeft size={16} />
             </button>
-            <button aria-label="Вперед" onClick={() => ref.current?.slideNext()} className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 transition-colors hover:border-black hover:bg-black hover:text-white">
+            <button aria-label={t("Вперед")} onClick={() => ref.current?.slideNext()} className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 transition-colors hover:border-black hover:bg-black hover:text-white">
               <ChevronRight size={16} />
             </button>
           </div>
@@ -53,7 +55,7 @@ export default function ProductCarousel({ title, subtitle, href, products, badge
       >
         {products.map((p) => (
           <SwiperSlide key={p.id}>
-            <ProductTile product={p} badges={badges} sizes="(max-width: 640px) 45vw, 22vw" />
+            <ProductTile product={p} badges={badges} sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, (max-width: 1440px) 23vw, 19vw" />
           </SwiperSlide>
         ))}
       </Swiper>

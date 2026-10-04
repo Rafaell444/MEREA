@@ -34,7 +34,7 @@ export type ModelDef = {
   help?: string;
 };
 
-const CATEGORY_SELECT_HELP = "Путь без начального слэша, например zhenschinam/nizhnee-bele/byustgaltery";
+const CATEGORY_SELECT_HELP = "Путь без начального слэша, например women/lingerie/bras";
 
 export const MODELS: ModelDef[] = [
   {
@@ -42,7 +42,7 @@ export const MODELS: ModelDef[] = [
     help: "Сообщения в верхней бегущей строке. Можно задать период показа.",
     fields: [
       { name: "text", label: "Текст", type: "text", required: true },
-      { name: "href", label: "Ссылка", type: "text", placeholder: "/rasprodazha/dlya-nee", width: "half" },
+      { name: "href", label: "Ссылка", type: "text", placeholder: "/sale/women", width: "half" },
       { name: "enabled", label: "Включено", type: "boolean", default: true, width: "half" },
       { name: "startsAt", label: "Показывать с", type: "date", width: "half" },
       { name: "endsAt", label: "Показывать до", type: "date", width: "half" },
@@ -267,6 +267,16 @@ export const MODELS: ModelDef[] = [
       { name: "notified", label: "Уведомлен", type: "boolean", default: false },
     ],
     listColumns: ["email", "productHandle", "size", "createdAt"], toggle: "notified", titleField: "email", search: ["email", "productHandle"],
+  },
+  {
+    key: "translations", delegate: "translation", label: "Перевод", labelPlural: "Переводы (KA / EN)", icon: "Languages", group: "content",
+    help: "Исходный текст — русская строка из интерфейса или из контента (меню, баннеры, страницы). Заполни грузинский и английский варианты — они заменят встроенный перевод. Тексты товаров переводятся в Shopify (Translate & Adapt).",
+    fields: [
+      { name: "source", label: "Исходный текст (RU)", type: "textarea", required: true },
+      { name: "ka", label: "ქართული (KA)", type: "textarea" },
+      { name: "en", label: "English (EN)", type: "textarea" },
+    ],
+    listColumns: ["source", "ka", "en"], titleField: "source", search: ["source", "ka", "en"],
   },
   {
     key: "users", delegate: "adminUser", label: "Администратор", labelPlural: "Администраторы", icon: "Users", group: "system",

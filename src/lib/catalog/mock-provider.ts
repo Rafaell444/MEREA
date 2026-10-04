@@ -30,7 +30,7 @@ function buildCard(m: MockModel, color: MockColor): ProductCard {
     id: `gid://mock/Product/${sku}`,
     handle: handleFor(m, color),
     title: m.title,
-    vendor: "Merea",
+    vendor: "Merey",
     productType: m.type,
     tags: m.tags,
     images: views.map((v, i) => ({ url: mockImage(m.sku, color.code, v), alt: `${m.title} — ${color.name} (${i + 1})`, width: 800, height: 1200 })),
@@ -85,7 +85,7 @@ function buildProduct(m: MockModel, color: MockColor): Product {
     sizeGuideKey: m.sizeGuideKey,
     rating: m.rating,
     reviewCount: m.reviewCount,
-    seo: { title: `${m.title} Merea, цвет ${color.name} — купить`, description: m.description.slice(0, 155) },
+    seo: { title: `${m.title} Merey, цвет ${color.name} — купить`, description: m.description.slice(0, 155) },
     collections: m.collections.map((h) => ({ handle: h, title: MOCK_COLLECTION_TITLES[h] ?? h })),
   };
 }
@@ -158,7 +158,7 @@ function buildFilters(list: Entry[]): ProductFilter[] {
       values: count((e) => e.card.sizes.map((s) => s.label)).sort((a, b) => (sizeOrder.indexOf(a[0]) - sizeOrder.indexOf(b[0])) || a[0].localeCompare(b[0])).map(([v, n]) => ({ id: v, label: v, count: n, input: v })),
     },
     { id: "material", label: "Материал", type: LIST, values: count((e) => e.model.tags.filter((t) => MATERIAL_LABELS[t])).map(([v, n]) => ({ id: v, label: MATERIAL_LABELS[v], count: n, input: v })) },
-    { id: "price", label: "Цена", type: PRICE, values: [{ id: "0-1000", label: "до 1 000 ₽", count: 0, input: "0-1000" }, { id: "1000-2000", label: "1 000 – 2 000 ₽", count: 0, input: "1000-2000" }, { id: "2000-100000", label: "от 2 000 ₽", count: 0, input: "2000-100000" }] },
+    { id: "price", label: "Цена", type: PRICE, values: [{ id: "0-1000", label: "до 50 ₾", count: 0, input: "0-1000" }, { id: "1000-2000", label: "50 – 100 ₾", count: 0, input: "1000-2000" }, { id: "2000-100000", label: "от 100 ₾", count: 0, input: "2000-100000" }] },
   ].filter((f) => f.values.length > 0);
 }
 

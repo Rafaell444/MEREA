@@ -5,6 +5,7 @@ import { getBadges } from "@/lib/cms/content";
 import FiltersDrawer, { FiltersBar } from "@/components/plp/FiltersDrawer";
 import ProductGrid from "@/components/plp/ProductGrid";
 import Pagination from "@/components/plp/Pagination";
+import { getT } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 const PAGE_SIZE = 24;
@@ -14,7 +15,8 @@ type Search = Record<string, string | string[] | undefined>;
 export async function generateMetadata({ searchParams }: { searchParams: Promise<Search> }): Promise<Metadata> {
   const sp = await searchParams;
   const q = typeof sp.q === "string" ? sp.q : "";
-  return { title: q ? `Поиск: ${q}` : "Поиск", robots: { index: false } };
+  const { t } = await getT();
+  return { title: q ? t("Поиск: {q}", { q }) : t("Поиск"), robots: { index: false } };
 }
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<Search> }) {
@@ -37,11 +39,12 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const result = q ? await catalog.search(q, { first: PAGE_SIZE, page, after, sort, filters }).catch(() => null) : null;
   const products = result?.products ?? [];
   const total = result?.totalCount ?? 0;
+  const { t } = await getT();
 
   return (
     <div className="px-4 py-4 sm:px-10">
-      <p className="text-xs uppercase text-gray-500">Результаты поиска</p>
-      <h1 className="mt-1 text-xl font-bold sm:text-2xl">{q ? `«${q}»` : "Поиск"}</h1>
+      <p className="text-xs uppercase text-gray-500">{t("Результаты поиска")}</p>
+      <h1 className="mt-1 text-xl font-bold sm:text-2xl">{q ? `«${q}»` : t("Поиск")}</h1>
       {q && (
         <>
           <FiltersBar total={total} filters={result?.filters ?? []} />

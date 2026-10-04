@@ -3,7 +3,7 @@ import { ensureCart, fail, guard, ok } from "@/lib/cart-server";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
-  const g = guard(req, 120);
+  const g = await guard(req, 120);
   if (g) return g;
   try {
     return ok(await ensureCart());

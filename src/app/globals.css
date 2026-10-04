@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-montserrat), "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-montserrat), "Montserrat", var(--font-georgian), "Noto Sans Georgian", ui-sans-serif, system-ui, sans-serif;
   --font-poppins: var(--font-poppins), "Poppins", sans-serif;
 
   --color-black: #000000;
@@ -77,7 +77,10 @@
 
 @layer base {
   * { border-color: var(--color-gray-300); }
-  html { -webkit-font-smoothing: antialiased; }
+  /* the design is light-only: stop browsers (Android Chrome / Samsung) from auto-darkening the page */
+  :root { color-scheme: light only; }
+  html { -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  img, video, svg { max-width: 100%; }
   body { background: #fff; color: #000; font-family: var(--font-sans); font-size: var(--text-sm); line-height: var(--text-sm--line-height); }
   button { cursor: pointer; }
   input, textarea, select { outline: none; }

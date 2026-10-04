@@ -1,11 +1,13 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useT, useLocalizedRouter } from "@/lib/i18n/client";
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 
-export default function StoreFinderForm({ placeholder = "Введи город или почтовый индекс" }: { placeholder?: string }) {
+export default function StoreFinderForm({ placeholder }: { placeholder?: string }) {
   const [q, setQ] = useState("");
-  const router = useRouter();
+  const t = useT();
+  const router = useLocalizedRouter();
+  const ph = placeholder ? t(placeholder) : t("Введи город или почтовый индекс");
   return (
     <form
       onSubmit={(e) => {
@@ -17,11 +19,11 @@ export default function StoreFinderForm({ placeholder = "Введи город �
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder={placeholder}
+        placeholder={ph}
         className="h-11 w-full border-b border-gray-400 bg-transparent pr-12 text-sm placeholder:text-gray-500 focus:border-black transition-colors"
-        aria-label={placeholder}
+        aria-label={ph}
       />
-      <button type="submit" aria-label="Найти магазин" className="absolute right-0 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black text-white transition-transform duration-300 hover:translate-x-0.5">
+      <button type="submit" aria-label={t("Найти магазин")} className="absolute right-0 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black text-white transition-transform duration-300 hover:translate-x-0.5">
         <ArrowRight size={16} />
       </button>
     </form>

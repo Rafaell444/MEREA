@@ -7,15 +7,17 @@ export function cn(...inputs: ClassValue[]) {
 
 export type Money = { amount: number; currencyCode: string };
 
-/** Format money the way merea.ru does: "2 199 ₽" (non-breaking spaces). */
-export function formatMoney(money: Money | number | null | undefined, currency = "RUB"): string {
+/** Format money: "2 199 ₾" (non-breaking spaces, currency symbol after the amount). */
+export function formatMoney(money: Money | number | null | undefined, currency = "GEL"): string {
   if (money == null) return "";
   const amount = typeof money === "number" ? money : money.amount;
   const code = typeof money === "number" ? currency : money.currencyCode || currency;
-  const whole = Math.round(amount);
+  const hasCents = Math.abs(amount - Math.round(amount)) > 0.004;
+  const whole = hasCents ? Math.floor(amount) : Math.round(amount);
+  const cents = hasCents ? "." + Math.round((amount - whole) * 100).toString().padStart(2, "0") : "";
   const grouped = whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  const symbol = code === "RUB" ? "₽" : code === "EUR" ? "€" : code === "USD" ? "$" : code;
-  return `${grouped} ${symbol}`;
+  const symbol = code === "GEL" ? "₾" : code === "RUB" ? "₽" : code === "EUR" ? "€" : code === "USD" ? "$" : code;
+  return `${grouped}${cents} ${symbol}`;
 }
 
 export function discountPercent(price: number, compareAt?: number | null): number | null {

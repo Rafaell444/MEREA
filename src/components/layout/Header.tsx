@@ -1,21 +1,23 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from "@/components/ui/Link";
 import { Search, Heart, User, ShoppingBag, Menu as MenuIcon } from "lucide-react";
 import Logo from "@/components/ui/Logo";
 import { cn } from "@/lib/utils";
+import { useT, usePath } from "@/lib/i18n/client";
 import { useUI } from "@/store/ui";
 import { useCart } from "@/store/cart";
 import { useWishlist } from "@/store/wishlist";
 import AccountMenu from "./AccountMenu";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export type HeaderMenu = { key: string; label: string };
 
 type Props = { menus: HeaderMenu[]; logo?: string; transparentOnHome?: boolean };
 
 export default function Header({ menus, logo, transparentOnHome = true }: Props) {
-  const pathname = usePathname();
+  const t = useT();
+  const pathname = usePath();
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -51,10 +53,10 @@ export default function Header({ menus, logo, transparentOnHome = true }: Props)
           {/* Left: nav */}
           <div className="flex w-3/12 items-center justify-start sm:w-4/12">
             <div className="flex items-center gap-4 sm:hidden">
-              <button aria-label="Меню" onClick={() => open("menu")} className="flex">
+              <button aria-label={t("Меню")} onClick={() => open("menu")} className="flex">
                 <MenuIcon size={24} strokeWidth={1.5} className={cn("max-sm:text-black", fg)} />
               </button>
-              <button aria-label="Поиск" onClick={() => open("search")} className="flex">
+              <button aria-label={t("Поиск")} onClick={() => open("search")} className="flex">
                 <Search size={24} strokeWidth={1.5} className={cn("max-sm:text-black", fg)} />
               </button>
             </div>
@@ -66,7 +68,7 @@ export default function Header({ menus, logo, transparentOnHome = true }: Props)
                     onMouseEnter={() => { if (window.matchMedia("(hover: hover)").matches) { setMenuTab(m.key); open("menu"); } }}
                     className={cn("group relative z-[71] block cursor-pointer text-sm font-bold uppercase transition-colors duration-500", fg)}
                   >
-                    {m.label}
+                    {t(m.label)}
                     <span className={cn("pointer-events-none absolute -bottom-1 left-1/2 h-0.5 w-[13px] -translate-x-1/2 rounded-sm opacity-0 transition-opacity duration-200 group-hover:opacity-100", transparent ? "bg-white" : "bg-black")} />
                   </button>
                 </li>
@@ -82,21 +84,22 @@ export default function Header({ menus, logo, transparentOnHome = true }: Props)
           {/* Right: icons */}
           <div className="flex w-3/12 justify-end sm:w-4/12">
             <div className={cn("flex items-center gap-4 sm:gap-6 transition-colors duration-500 max-sm:text-black", fg)}>
-              <button aria-label="Поиск" onClick={() => open("search")} className="hidden sm:flex transition-transform hover:scale-110">
+              <LanguageSwitcher light={transparent} className="hidden sm:block" />
+              <button aria-label={t("Поиск")} onClick={() => open("search")} className="hidden sm:flex transition-transform hover:scale-110">
                 <Search size={24} strokeWidth={1.5} />
               </button>
-              <Link href="/wishlist" aria-label="Избранное" className="relative hidden sm:flex transition-transform hover:scale-110">
+              <Link href="/wishlist" aria-label={t("Избранное")} className="relative hidden sm:flex transition-transform hover:scale-110">
                 <Heart size={24} strokeWidth={1.5} />
                 {wishCount > 0 && <span className="absolute -right-1.5 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-black px-1 text-[9px] font-bold text-white">{wishCount}</span>}
               </Link>
               <div className="relative" onMouseEnter={() => setAccountOpen(true)} onMouseLeave={() => setAccountOpen(false)}>
-                <Link href="/myprofile" aria-label="Профиль" className="relative flex transition-transform hover:scale-110">
+                <Link href="/myprofile" aria-label={t("Профиль")} className="relative flex transition-transform hover:scale-110">
                   <User size={24} strokeWidth={1.5} />
                   <span className={cn("absolute -bottom-2 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-black opacity-0 transition-opacity", accountOpen && "opacity-100", transparent && "bg-white")} />
                 </Link>
                 <AccountMenu open={accountOpen} onClose={() => setAccountOpen(false)} />
               </div>
-              <button aria-label="Корзина" onClick={() => open("cart")} className="relative flex transition-transform hover:scale-110">
+              <button aria-label={t("Корзина")} onClick={() => open("cart")} className="relative flex transition-transform hover:scale-110">
                 <ShoppingBag size={24} strokeWidth={1.5} />
                 {qty > 0 && <span className={cn("absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-bold", transparent ? "bg-white text-black max-sm:bg-black max-sm:text-white" : "bg-black text-white")}>{qty}</span>}
               </button>

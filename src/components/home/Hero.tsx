@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 import "swiper/css";
@@ -7,9 +7,11 @@ import "swiper/css/effect-fade";
 import "swiper/css/pagination";
 import type { HeroSlide } from "@/lib/cms/content";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 /** Full-bleed hero slider that sits under the transparent header (pulled up by the header height). */
 export default function Hero({ slides }: { slides: HeroSlide[] }) {
+  const t = useT();
   if (!slides.length) return null;
   return (
     <section className="relative sm:-mt-[56px]">
@@ -21,7 +23,7 @@ export default function Hero({ slides }: { slides: HeroSlide[] }) {
         pagination={{ clickable: true }}
         loop={slides.length > 1}
         speed={900}
-        className="hero-swiper h-[calc(100svh-87px)] min-h-[520px] max-h-[900px] w-full sm:h-[calc(100vh-31px)]"
+        className="hero-swiper h-[calc(100svh-87px)] min-h-[440px] max-h-[900px] w-full sm:h-[calc(100vh-31px)] sm:min-h-[520px]"
       >
         {slides.map((s, i) => {
           const light = s.textTheme !== "dark";
@@ -38,10 +40,11 @@ export default function Hero({ slides }: { slides: HeroSlide[] }) {
                   </>
                 )}
                 {!hasImage && (
-                  <div className="absolute inset-0 flex items-center justify-center text-white select-none">
-                    <div className="flex items-end gap-3 leading-none">
-                      <span className="text-[44px] sm:text-[72px] font-light">Распродажа<br />до</span>
-                      <span className="text-[96px] sm:text-[180px] font-bold tracking-tight">-70%</span>
+                  /* Text-only promo slide: fluid type (clamp + vw) so the lettering always fits the viewport width */
+                  <div className="absolute inset-x-0 top-[10%] flex items-center justify-center px-4 text-white select-none sm:inset-y-0 sm:top-0 sm:pb-[14%]">
+                    <div className="flex max-w-full flex-wrap items-end justify-center gap-x-[2.5vw] gap-y-[clamp(14px,3vw,28px)] text-center leading-none">
+                      <span className="whitespace-nowrap text-[clamp(24px,7vw,72px)] font-light leading-[1.25]">{t("Распродажа до")}</span>
+                      <span className="text-[clamp(72px,24vw,180px)] font-bold tracking-tight">-70%</span>
                     </div>
                   </div>
                 )}
@@ -50,14 +53,14 @@ export default function Hero({ slides }: { slides: HeroSlide[] }) {
                 )}
                 <div className={cn("absolute inset-x-0 bottom-0 bg-gradient-to-t to-transparent", light ? "from-black/50" : "from-white/40")} style={{ height: "55%" }} />
                 <div className={cn("absolute bottom-10 left-4 right-4 max-w-[520px] sm:bottom-14 sm:left-10", s.align === "center" && "sm:left-1/2 sm:-translate-x-1/2 sm:text-center", light ? "text-white" : "text-black")}>
-                  <h2 className="text-[28px] font-bold leading-[1.1] sm:text-[40px] [.swiper-slide-active_&]:animate-fade-up">{s.title}</h2>
-                  {s.subtitle && <p className="mt-3 max-w-[460px] text-xsm leading-5 sm:text-sm [.swiper-slide-active_&]:animate-fade-up [animation-delay:120ms]">{s.subtitle}</p>}
+                  <h2 className="text-[clamp(22px,6.4vw,40px)] font-bold leading-[1.1] [.swiper-slide-active_&]:animate-fade-up">{t(s.title)}</h2>
+                  {s.subtitle && <p className="mt-3 max-w-[460px] text-xsm leading-5 sm:text-sm [.swiper-slide-active_&]:animate-fade-up [animation-delay:120ms]">{t(s.subtitle)}</p>}
                   {s.ctaText && s.ctaHref && (
                     <Link href={s.ctaHref} className={cn("mt-5 inline-flex [.swiper-slide-active_&]:animate-fade-up [animation-delay:240ms]", light ? "btn-white h-11 px-7 text-xsm" : "btn-primary h-11 px-7 text-xsm")}>
-                      {s.ctaText}
+                      {t(s.ctaText)}
                     </Link>
                   )}
-                  {s.note && <p className="mt-5 text-[10px] opacity-80">{s.note}</p>}
+                  {s.note && <p className="mt-5 text-[10px] opacity-80">{t(s.note)}</p>}
                 </div>
               </div>
             </SwiperSlide>

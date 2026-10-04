@@ -1,13 +1,15 @@
 import type { ProductCard } from "@/lib/catalog/types";
 import type { PromoBadge } from "@/lib/cms/content";
 import ProductTile from "@/components/product/ProductTile";
+import { getT } from "@/lib/i18n/server";
 
-export default function ProductGrid({ products, badges }: { products: ProductCard[]; badges: PromoBadge[] }) {
+export default async function ProductGrid({ products, badges }: { products: ProductCard[]; badges: PromoBadge[] }) {
   if (!products.length) {
+    const { t } = await getT();
     return (
       <div className="py-20 text-center">
-        <p className="text-lg font-bold">Ничего не найдено</p>
-        <p className="mt-2 text-sm text-gray-500">Попробуй изменить фильтры или выбрать другую категорию.</p>
+        <p className="text-lg font-bold">{t("Ничего не найдено")}</p>
+        <p className="mt-2 text-sm text-gray-500">{t("Попробуй изменить фильтры или выбрать другую категорию.")}</p>
       </div>
     );
   }

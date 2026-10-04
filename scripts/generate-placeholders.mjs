@@ -58,8 +58,6 @@ function bannerSvg({ w, h, from, to, title, subtitle, file }) {
   <rect width="${w}" height="${h}" fill="url(#g)"/><rect width="${w}" height="${h}" fill="url(#r)"/>
   <circle cx="${w * 0.72}" cy="${h * 0.45}" r="${Math.min(w, h) * 0.28}" fill="#ffffff" fill-opacity="0.12"/>
   <circle cx="${w * 0.78}" cy="${h * 0.6}" r="${Math.min(w, h) * 0.16}" fill="#ffffff" fill-opacity="0.1"/>
-  <text x="${w * 0.06}" y="${h * 0.12}" font-family="Arial, Helvetica, sans-serif" font-size="${Math.round(h * 0.045)}" font-weight="700" fill="#ffffff" fill-opacity="0.9">${esc(title)}</text>
-  <text x="${w * 0.06}" y="${h * 0.12 + h * 0.06}" font-family="Arial, Helvetica, sans-serif" font-size="${Math.round(h * 0.03)}" fill="#ffffff" fill-opacity="0.75">${esc(subtitle)}</text>
 </svg>`;
   writeFileSync(join(out, "banners", file), svg);
 }
@@ -68,9 +66,8 @@ function tileSvg({ hex, shape, label, file }) {
   const ink = luminance(hex) < 0.55 ? "#ffffff" : "#1c1c1c";
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 480 480">
   <rect width="480" height="480" rx="24" fill="${hex}"/>
-  <g transform="translate(0 -70)" fill="${ink}" fill-opacity="0.9" stroke="${ink}">${SHAPES[shape] ?? SHAPES.top}</g>
-  <text x="240" y="440" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="${ink}">${esc(label)}</text>
-</svg>`;
+  <g transform="translate(0 -40)" fill="${ink}" fill-opacity="0.9" stroke="${ink}">${SHAPES[shape] ?? SHAPES.top}</g>
+</svg>`; // no baked-in label: the (translated) title is rendered in HTML
   writeFileSync(join(out, "tiles", file), svg);
 }
 
@@ -81,7 +78,7 @@ bannerSvg({ w: 1080, h: 1440, from: "#d8b7a0", to: "#8d5e4a", title: "Natural Li
 bannerSvg({ w: 1200, h: 1440, from: "#5c1d2a", to: "#2b0b12", title: "Влюбляясь в бордовый", subtitle: "Редакционный блок · демо", file: "editorial-burgundy.svg" });
 bannerSvg({ w: 1920, h: 900, from: "#f2c9d3", to: "#b6657f", title: "Пижамы для неё", subtitle: "Баннер · демо", file: "banner-pajamas.svg" });
 bannerSvg({ w: 900, h: 1200, from: "#3b3b3b", to: "#121212", title: "-10%", subtitle: "за регистрацию", file: "popup-newsletter.svg" });
-bannerSvg({ w: 1920, h: 600, from: "#fbe9ee", to: "#e5a4bb", title: "Merea Club", subtitle: "Программа лояльности", file: "loyalty.svg" });
+bannerSvg({ w: 1920, h: 600, from: "#fbe9ee", to: "#e5a4bb", title: "Merey Club", subtitle: "Программа лояльности", file: "loyalty.svg" });
 
 // ---- category tiles ----
 const tiles = [

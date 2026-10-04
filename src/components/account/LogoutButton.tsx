@@ -1,8 +1,8 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useLocalizedRouter } from "@/lib/i18n/client";
 
 export default function LogoutButton({ children, className }: { children: React.ReactNode; className?: string }) {
-  const router = useRouter();
+  const router = useLocalizedRouter();
   return (
     <button
       className={className}

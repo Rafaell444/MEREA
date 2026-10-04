@@ -1,6 +1,6 @@
 /**
  * Mock catalog used until Shopify credentials are configured.
- * Product data mirrors the real Merea RU assortment (SKUs, names, prices) so the
+ * Product data mirrors the real Merey RU assortment (SKUs, names, prices) so the
  * design can be reviewed with realistic content. Images are served from the brand's
  * own media CDN (media.clz.ru) exactly like the live site does.
  */

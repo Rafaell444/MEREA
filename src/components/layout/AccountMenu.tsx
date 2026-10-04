@@ -1,12 +1,16 @@
 "use client";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { ArrowRight, Gift, User, Package, Heart, MapPin, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useT, useLocale } from "@/lib/i18n/client";
+import { localizePath } from "@/lib/i18n/config";
 import { useEffect, useState } from "react";
 
 type Me = { email: string; firstName?: string } | null;
 
 export default function AccountMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const t = useT();
+  const locale = useLocale();
   const [me, setMe] = useState<Me | undefined>(undefined);
   useEffect(() => {
     if (!open || me !== undefined) return;
@@ -14,11 +18,11 @@ export default function AccountMenu({ open, onClose }: { open: boolean; onClose:
   }, [open, me]);
 
   const items = [
-    { href: "/bonuses", label: "Программа лояльности", icon: Gift, pink: true },
-    { href: "/myprofile", label: "Профиль", icon: User },
-    { href: "/orders", label: "Заказы", icon: Package },
-    { href: "/wishlist", label: "Избранное", icon: Heart },
-    { href: "/stores", label: "Магазины", icon: MapPin },
+    { href: "/bonuses", label: t("Программа лояльности"), icon: Gift, pink: true },
+    { href: "/myprofile", label: t("Профиль"), icon: User },
+    { href: "/orders", label: t("Заказы"), icon: Package },
+    { href: "/wishlist", label: t("Избранное"), icon: Heart },
+    { href: "/stores", label: t("Магазины"), icon: MapPin },
   ];
 
   return (
@@ -26,13 +30,13 @@ export default function AccountMenu({ open, onClose }: { open: boolean; onClose:
       <div className={cn("border border-gray-200 bg-white text-black shadow-xl transition-transform duration-300", open ? "translate-x-0" : "translate-x-6")}>
         {!me && (
           <div className="flex flex-col gap-2 px-6 pb-4 pt-6">
-            <Link href="/myprofile" onClick={onClose} className="btn-primary h-10 w-full text-xsm">Вход</Link>
-            <Link href="/myprofile/register" onClick={onClose} className="btn-outline h-10 w-full text-xsm">Регистрация</Link>
+            <Link href="/myprofile" onClick={onClose} className="btn-primary h-10 w-full text-xsm">{t("Вход")}</Link>
+            <Link href="/myprofile/register" onClick={onClose} className="btn-outline h-10 w-full text-xsm">{t("Регистрация")}</Link>
           </div>
         )}
         {me && (
           <div className="px-6 pb-2 pt-6">
-            <p className="text-sm font-bold">Привет{me.firstName ? `, ${me.firstName}` : ""}!</p>
+            <p className="text-sm font-bold">{me.firstName ? t("Привет, {name}!", { name: me.firstName }) : t("Привет!")}</p>
             <p className="text-xsm text-gray-500">{me.email}</p>
           </div>
         )}
@@ -49,10 +53,10 @@ export default function AccountMenu({ open, onClose }: { open: boolean; onClose:
           {me && (
             <li className="px-6 py-4 border-t border-gray-200">
               <button
-                onClick={async () => { await fetch("/api/auth/logout", { method: "POST" }); setMe(null); onClose(); location.href = "/"; }}
+                onClick={async () => { await fetch("/api/auth/logout", { method: "POST" }); setMe(null); onClose(); location.href = localizePath("/", locale); }}
                 className="group/link flex w-full items-center gap-2 text-left"
               >
-                <LogOut size={22} strokeWidth={1.5} /> <span className="text-sm">Выйти</span>
+                <LogOut size={22} strokeWidth={1.5} /> <span className="text-sm">{t("Выйти")}</span>
               </button>
             </li>
           )}

@@ -38,7 +38,7 @@ export default function Sidebar({ user, mode }: { user: { name: string; email: s
       </button>
       <aside className={cn("fixed inset-y-0 left-0 z-40 w-64 shrink-0 overflow-y-auto border-r border-gray-200 bg-white px-4 py-5 transition-transform lg:static lg:translate-x-0", open ? "translate-x-0" : "-translate-x-full")}>
         <div className="mb-5 flex items-center justify-between px-2">
-          <Link href="/admin" className="text-lg font-bold tracking-[0.12em]">MEREA <span className="text-xs font-medium tracking-normal text-gray-500">admin</span></Link>
+          <Link href="/admin" className="text-lg font-bold tracking-[0.12em]">MEREY <span className="text-xs font-medium tracking-normal text-gray-500">admin</span></Link>
         </div>
         <div className={cn("mb-4 rounded-sm px-3 py-2 text-xsm", mode === "shopify" ? "bg-success/10 text-success" : "bg-pale-pink text-badge")}>
           {mode === "shopify" ? "Подключено к Shopify" : "Демо-каталог (Shopify не подключен)"}

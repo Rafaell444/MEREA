@@ -36,7 +36,14 @@ export async function storefront<T>(
   else headers["X-Shopify-Storefront-Access-Token"] = SHOPIFY_TOKEN;
   if (options.buyerIp) headers["Shopify-Storefront-Buyer-IP"] = options.buyerIp;
 
-  const init: RequestInit & { next?: { revalidate?: number; tags?: string[] } } = { method: "POST", headers, body: JSON.stringify({ query, variables }) };
+  // Operations declaring $country/$language get the market + the visitor's language (Shopify translations)
+  let vars = variables;
+  if (query.includes("$language: LanguageCode")) {
+    const { getLocale } = await import("@/lib/i18n/server");
+    const { SHOPIFY_LANGUAGE } = await import("@/lib/i18n/config");
+    vars = { country: COUNTRY, language: SHOPIFY_LANGUAGE[await getLocale()], ...variables };
+  }
+  const init: RequestInit & { next?: { revalidate?: number; tags?: string[] } } = { method: "POST", headers, body: JSON.stringify({ query, variables: vars }) };
   if (options.cache === "no-store" || options.revalidate === false) init.cache = "no-store";
   else init.next = { revalidate: options.revalidate ?? 60, ...(options.tags ? { tags: options.tags } : {}) };
   let res: Response;
@@ -59,8 +66,8 @@ export async function storefront<T>(
 }
 
 /** `@inContext(...)` directive. Country/language come from env so the store's Markets setup can be matched. */
-const COUNTRY = (process.env.SHOPIFY_COUNTRY ?? "RU").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 2) || "RU";
-const LANGUAGE = (process.env.SHOPIFY_LANGUAGE ?? "RU").toUpperCase().replace(/[^A-Z_]/g, "").slice(0, 5) || "RU";
+const COUNTRY = (process.env.SHOPIFY_COUNTRY ?? "GE").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 2) || "GE";
+const LANGUAGE = (process.env.SHOPIFY_LANGUAGE ?? "KA").toUpperCase().replace(/[^A-Z_]/g, "").slice(0, 5) || "KA";
 export const IN_CONTEXT = `@inContext(country: ${COUNTRY}, language: ${LANGUAGE})`;
 
 export type ShopInfo = { name: string; domain: string; currency: string; apiVersion: string };

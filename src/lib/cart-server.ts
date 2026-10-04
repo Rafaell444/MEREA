@@ -5,6 +5,7 @@ import { getCatalog } from "@/lib/catalog";
 import type { Cart } from "@/lib/catalog/types";
 import { getCartId, setCartId, clearCartId } from "@/lib/auth/session";
 import { rateLimit, clientIp } from "@/lib/auth/rate-limit";
+import { getT } from "@/lib/i18n/server";
 
 export const lineInput = z.object({ merchandiseId: z.string().min(1).max(200), quantity: z.number().int().min(1).max(50) });
 export const updateInput = z.object({ id: z.string().min(1).max(200), quantity: z.number().int().min(0).max(50) });
@@ -27,9 +28,12 @@ export async function ensureCart(): Promise<Cart> {
   return cart;
 }
 
-export function guard(req: Request, limit = 60) {
+export async function guard(req: Request, limit = 60) {
   const rl = rateLimit(`cart:${clientIp(req)}`, limit, 60_000);
-  if (!rl.ok) return NextResponse.json({ error: "Слишком много запросов" }, { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } });
+  if (!rl.ok) {
+    const { t } = await getT();
+    return NextResponse.json({ error: t("Слишком много запросов") }, { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } });
+  }
   return null;
 }
 
@@ -37,7 +41,8 @@ export function ok(cart: Cart) {
   return NextResponse.json({ cart }, { headers: { "Cache-Control": "no-store" } });
 }
 
-export function fail(e: unknown, status = 400) {
-  const msg = e instanceof Error ? e.message : "Ошибка";
+export async function fail(e: unknown, status = 400) {
+  const { t } = await getT();
+  const msg = e instanceof Error ? e.message : t("Ошибка");
   return NextResponse.json({ error: msg }, { status });
 }

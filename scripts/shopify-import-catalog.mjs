@@ -1,5 +1,5 @@
 /**
- * Imports the demo catalog (src/lib/catalog/mock-data.ts — the real Merea RU assortment structure) into Shopify:
+ * Imports the demo catalog (src/lib/catalog/mock-data.ts — the real Merey RU assortment structure) into Shopify:
  * collections (one per category handle used by the site) and products with colour variants, sizes, tags, metafields
  * and placeholder images. Requires an Admin API token with write_products + write_inventory (custom app).
  *
@@ -69,7 +69,7 @@ for (const m of MODELS) {
     const sizes = m.sizes;
     const media = ["M", "F", "FI"].map((v) => imageUrl(m.sku, color.code, v)).filter(Boolean).map((src) => ({ originalSource: src, contentType: "IMAGE", alt: `${m.title} — ${colorName}` }));
     const input = {
-      handle, title: m.title, descriptionHtml: `<p>${m.description}</p>`, vendor: "Merea", productType: m.type, status: "ACTIVE", tags,
+      handle, title: m.title, descriptionHtml: `<p>${m.description}</p>`, vendor: "Merey", productType: m.type, status: "ACTIVE", tags,
       productOptions: [{ name: "Цвет", values: [{ name: colorName }] }, { name: "Размер", values: sizes.map((s) => ({ name: s })) }],
       variants: sizes.map((s) => ({ optionValues: [{ optionName: "Цвет", name: colorName }, { optionName: "Размер", name: s }], price: String(m.price), compareAtPrice: m.compareAt ? String(m.compareAt) : null, sku: `${m.sku}${color.code}-${s}`, inventoryPolicy: "DENY" })),
       metafields: [

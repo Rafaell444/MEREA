@@ -3,7 +3,7 @@ import { getAdminSession } from "@/lib/auth/session";
 import Sidebar from "@/components/admin/Sidebar";
 import { catalogMode } from "@/lib/catalog";
 
-export const metadata: Metadata = { title: { default: "Админ-панель", template: "%s · Админ Merea" }, robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: { default: "Админ-панель", template: "%s · Админ Merey" }, robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

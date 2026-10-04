@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { rateLimit, clientIp } from "@/lib/auth/rate-limit";
+import { getT } from "@/lib/i18n/server";
 
 const schema = z.object({
   productHandle: z.string().min(1).max(200),
@@ -12,14 +13,15 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
+  const { t } = await getT();
   const rl = rateLimit(`review:${clientIp(req)}`, 3, 30 * 60_000);
-  if (!rl.ok) return NextResponse.json({ error: "Попробуй позже" }, { status: 429 });
+  if (!rl.ok) return NextResponse.json({ error: t("Попробуй позже") }, { status: 429 });
   try {
     const body = schema.parse(await req.json());
     await db.review.create({ data: { ...body, approved: false } });
-    return NextResponse.json({ ok: true, message: "Спасибо! Отзыв появится после модерации." });
+    return NextResponse.json({ ok: true, message: t("Спасибо! Отзыв появится после модерации.") });
   } catch (e) {
-    if (e instanceof z.ZodError) return NextResponse.json({ error: "Проверь заполнение формы" }, { status: 400 });
-    return NextResponse.json({ error: "Не удалось сохранить отзыв" }, { status: 500 });
+    if (e instanceof z.ZodError) return NextResponse.json({ error: t("Проверь заполнение формы") }, { status: 400 });
+    return NextResponse.json({ error: t("Не удалось сохранить отзыв") }, { status: 500 });
   }
 }

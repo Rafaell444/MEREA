@@ -1,4 +1,4 @@
-# Merea — headless Shopify storefront + admin
+# Merey — headless Shopify storefront + admin
 
 Next.js 15 (App Router) storefront that reproduces the merea.ru experience (women's + girls' sections) on top of the
 Shopify Storefront API, plus a built-in admin panel for every piece of site content.
@@ -36,7 +36,7 @@ so the design can be reviewed. Cart, wishlist, search, filters and popups all wo
 
 | Site concept | Shopify |
 | --- | --- |
-| Category page URL (`/zhenschinam/nizhnee-bele/byustgaltery`) | `CategoryPage.collectionHandle` in admin → a **collection** handle |
+| Category page URL (`/women/lingerie/bras`) | `CategoryPage.collectionHandle` in admin → a **collection** handle |
 | Product page `/product/<handle>` | product handle |
 | Sizes | variant option «Размер» (or «Size») |
 | Colour of this product | metafield `custom.color_name` (fallback: option «Цвет») |
@@ -158,7 +158,7 @@ Supabase Dashboard → your project → **Connect** →
 - *Transaction pooler* URI (port 6543) → `DATABASE_URL=postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres?pgbouncer=true`
 - *Direct connection* URI (port 5432) → `DIRECT_URL=postgresql://postgres:<password>@db.<ref>.supabase.co:5432/postgres`
 
-Then: `npx prisma db push && npm run db:seed`. Add both variables to Vercel as well. To keep the Merea tables apart from
+Then: `npx prisma db push && npm run db:seed`. Add both variables to Vercel as well. To keep the Merey tables apart from
 other apps in the same project, append `&schema=merea` to `DATABASE_URL` and `?schema=merea` to `DIRECT_URL`.
 
 _Deployed on Vercel · database on Supabase · commerce on Shopify._

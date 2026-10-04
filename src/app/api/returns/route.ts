@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { rateLimit, clientIp } from "@/lib/auth/rate-limit";
+import { getT } from "@/lib/i18n/server";
 
 const schema = z.object({
   email: z.string().email().max(120),
@@ -12,14 +13,15 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
+  const { t } = await getT();
   const rl = rateLimit(`returns:${clientIp(req)}`, 5, 30 * 60_000);
-  if (!rl.ok) return NextResponse.json({ error: "Попробуй позже" }, { status: 429 });
+  if (!rl.ok) return NextResponse.json({ error: t("Попробуй позже") }, { status: 429 });
   try {
     const body = schema.parse(await req.json());
     const r = await db.returnRequest.create({ data: { email: body.email.toLowerCase(), orderNumber: body.orderNumber, items: JSON.stringify(body.items), reason: body.reason, comment: body.comment } });
     return NextResponse.json({ ok: true, id: r.id });
   } catch (e) {
-    if (e instanceof z.ZodError) return NextResponse.json({ error: "Проверь заполнение формы" }, { status: 400 });
-    return NextResponse.json({ error: "Не удалось создать заявку" }, { status: 500 });
+    if (e instanceof z.ZodError) return NextResponse.json({ error: t("Проверь заполнение формы") }, { status: 400 });
+    return NextResponse.json({ error: t("Не удалось создать заявку") }, { status: 500 });
   }
 }

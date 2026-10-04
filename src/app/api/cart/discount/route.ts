@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 const schema = z.object({ codes: z.array(z.string().trim().min(1).max(40).regex(/^[A-Za-z0-9_-]+$/)).max(3) });
 
 export async function POST(req: Request) {
-  const g = guard(req, 20);
+  const g = await guard(req, 20);
   if (g) return g;
   try {
     const body = schema.parse(await req.json());

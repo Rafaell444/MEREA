@@ -12,7 +12,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm rounded-sm border border-gray-200 bg-white p-8 shadow-sm">
-        <p className="text-center text-xl font-bold tracking-[0.12em]">MEREA</p>
+        <p className="text-center text-xl font-bold tracking-[0.12em]">MEREY</p>
         <p className="mb-6 mt-1 text-center text-xsm text-gray-500">Панель управления сайтом</p>
         <LoginForm next={next} />
       </div>

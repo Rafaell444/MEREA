@@ -9,6 +9,7 @@ import ProductCarousel from "@/components/product/ProductCarousel";
 import Reviews from "@/components/product/Reviews";
 import { PromoBadge } from "@/components/ui/Badge";
 import { resolveBadges } from "@/lib/badges";
+import { getT } from "@/lib/i18n/server";
 
 export const revalidate = 120;
 
@@ -19,10 +20,10 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const catalog = await getCatalog();
   const p = await catalog.getProduct(handle).catch(() => null);
   if (!p) return {};
+  const { t } = await getT();
   return {
-    title: p.seo?.title ?? `${p.title} Merea — купить`,
+    title: p.seo?.title ?? t("{title} Merey — купить", { title: p.title }),
     description: p.seo?.description ?? p.description.slice(0, 160),
-    alternates: { canonical: `/product/${p.handle}` },
     openGraph: { images: p.images[0] ? [{ url: p.images[0].url }] : [] },
   };
 }
@@ -32,6 +33,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   const catalog = await getCatalog();
   const product = await catalog.getProduct(handle).catch(() => null);
   if (!product) notFound();
+  const { t } = await getT();
 
   const [badges, reviews, recs, categories] = await Promise.all([
     getBadges(),
@@ -47,7 +49,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   if (matched) {
     let cur: typeof matched | undefined = matched;
     while (cur) {
-      crumbs.unshift({ label: cur.navTitle ?? cur.title, href: `/${cur.path}` });
+      crumbs.unshift({ label: t(cur.navTitle ?? cur.title), href: `/${cur.path}` });
       cur = cur.parentPath ? categories.find((c) => c.path === cur!.parentPath) : undefined;
     }
   }
@@ -64,7 +66,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
     image: product.images.map((i) => i.url),
     description: product.description,
     sku: product.sku,
-    brand: { "@type": "Brand", name: "Merea" },
+    brand: { "@type": "Brand", name: "Merey" },
     offers: { "@type": "AggregateOffer", priceCurrency: product.price.currencyCode, lowPrice: product.price.amount, availability: product.variants.some((v) => v.availableForSale) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" },
     ...(reviewCount ? { aggregateRating: { "@type": "AggregateRating", ratingValue: ratingFromReviews.toFixed(1), reviewCount } } : {}),
   };
@@ -86,7 +88,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
         </div>
       </div>
 
-      <ProductCarousel title="Тебе может также понравиться" products={recs} badges={badges} className="mt-6" />
+      <ProductCarousel title={t("Тебе может также понравиться")} products={recs} badges={badges} className="mt-6" />
       <Reviews productHandle={product.handle} reviews={reviews.map((r) => ({ ...r, createdAt: r.createdAt.toString() }))} rating={ratingFromReviews} />
     </div>
   );

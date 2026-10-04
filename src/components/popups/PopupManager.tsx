@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from "@/components/ui/Link";
 import Modal from "@/components/ui/Modal";
 import type { PopupConfig } from "@/lib/cms/content";
 import { cn } from "@/lib/utils";
+import { useT, usePath } from "@/lib/i18n/client";
 
 const LS_PREFIX = "tz-popup:";
 
@@ -26,7 +26,7 @@ function matches(path: string, list: string[]) {
 
 /** Renders every enabled CMS popup with its own timing rules; cookie consent always has priority. */
 export default function PopupManager({ popups }: { popups: PopupConfig[] }) {
-  const pathname = usePathname();
+  const pathname = usePath();
   const [active, setActive] = useState<string | null>(null);
   const [cookieDone, setCookieDone] = useState(false);
 
@@ -82,21 +82,22 @@ export default function PopupManager({ popups }: { popups: PopupConfig[] }) {
 
 /* ---------------- Cookie consent ("Персонализированная навигация") ---------------- */
 function CookieConsent({ popup, onAccept }: { popup: PopupConfig; onAccept: () => void }) {
+  const t = useT();
   return (
     <Modal open closable={false} size="sm" className="max-w-[560px] rounded-sm">
       <div className="px-8 py-10 text-center sm:px-12">
-        <h2 className="mb-4 text-lg font-bold sm:text-xl">{popup.title}</h2>
+        <h2 className="mb-4 text-lg font-bold sm:text-xl">{popup.title ? t(popup.title) : null}</h2>
         <p className="text-xsm leading-5 text-gray-900 sm:text-sm sm:leading-6">
-          {popup.body}{" "}
+          {popup.body ? t(popup.body) : null}{" "}
           {popup.secondaryText && popup.ctaHref && (
             <Link href={popup.ctaHref} className="underline underline-offset-2" target="_blank">
-              {popup.secondaryText}
+              {t(popup.secondaryText)}
             </Link>
           )}
           .
         </p>
         <button onClick={onAccept} className="btn-primary mt-8 h-11 min-w-[180px] uppercase tracking-wide">
-          {popup.ctaText ?? "Принять"}
+          {popup.ctaText ? t(popup.ctaText) : t("Принять")}
         </button>
       </div>
     </Modal>
@@ -105,7 +106,10 @@ function CookieConsent({ popup, onAccept }: { popup: PopupConfig; onAccept: () =
 
 /* ---------------- Newsletter / registration promo ("-10% за регистрацию") ---------------- */
 function NewsletterPopup({ popup, onClose }: { popup: PopupConfig; onClose: () => void }) {
+  const t = useT();
   const cfg = popup.config as Record<string, string>;
+  const loyaltyLink = cfg.consentPrivacyLink ? <Link href={cfg.consentPrivacyLink} className="underline" target="_blank">{t("программы лояльности")}</Link> : t("программы лояльности");
+  const [acceptBefore, acceptAfter = ""] = t("Принимаю условия {link}").split("{link}");
   const [email, setEmail] = useState("");
   const [privacy, setPrivacy] = useState(true);
   const [marketing, setMarketing] = useState(true);
@@ -114,12 +118,12 @@ function NewsletterPopup({ popup, onClose }: { popup: PopupConfig; onClose: () =
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!privacy) { setError("Необходимо принять условия программы лояльности"); return; }
+    if (!privacy) { setError(t("Необходимо принять условия программы лояльности")); return; }
     setState("loading");
     try {
       const res = await fetch("/api/newsletter", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, source: "popup", consent: marketing }) });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Ошибка");
+      if (!res.ok) throw new Error(json.error ?? t("Ошибка"));
       setState("done");
     } catch (err) {
       setState("error");
@@ -139,48 +143,48 @@ function NewsletterPopup({ popup, onClose }: { popup: PopupConfig; onClose: () =
         <div className="px-8 py-10 text-center">
           {state === "done" ? (
             <div className="py-6">
-              <h2 className="mb-3 text-lg font-bold">{cfg.successTitle ?? "Спасибо!"}</h2>
-              <p className="text-sm text-gray-900">{cfg.successText}</p>
+              <h2 className="mb-3 text-lg font-bold">{cfg.successTitle ? t(cfg.successTitle) : t("Спасибо!")}</h2>
+              <p className="text-sm text-gray-900">{cfg.successText ? t(cfg.successText) : null}</p>
               {popup.ctaHref && (
                 <Link href={popup.ctaHref} onClick={onClose} className="btn-primary mt-6 h-10 px-6">
-                  {popup.ctaText}
+                  {popup.ctaText ? t(popup.ctaText) : null}
                 </Link>
               )}
             </div>
           ) : (
             <form onSubmit={submit}>
-              <h2 className="mb-3 text-lg font-bold leading-tight sm:text-xl">{popup.title}</h2>
-              {popup.body && <p className="mb-6 text-sm text-gray-900">{popup.body}</p>}
+              <h2 className="mb-3 text-lg font-bold leading-tight sm:text-xl">{popup.title ? t(popup.title) : null}</h2>
+              {popup.body && <p className="mb-6 text-sm text-gray-900">{t(popup.body)}</p>}
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={cfg.placeholder ?? "Электронная почта"}
+                placeholder={cfg.placeholder ? t(cfg.placeholder) : t("Электронная почта")}
                 className="h-11 w-full rounded-full border border-gray-300 bg-off-white px-5 text-center text-sm placeholder:text-gray-500 focus:border-black"
               />
               <button type="submit" disabled={state === "loading"} className="btn-primary mt-3 h-11 w-full">
-                {popup.ctaText ?? "Зарегистрироваться"}
+                {popup.ctaText ? t(popup.ctaText) : t("Зарегистрироваться")}
               </button>
               <div className="mt-5 space-y-2 text-left text-[10px] leading-3 text-gray-500">
                 {cfg.consentPrivacy && (
                   <p>
-                    {cfg.consentPrivacy}{" "}
-                    {cfg.consentPrivacyLink && <Link href={cfg.consentPrivacyLink} className="underline" target="_blank">программы лояльности</Link>}
+                    {t(cfg.consentPrivacy)}{" "}
+                    {cfg.consentPrivacyLink && <Link href={cfg.consentPrivacyLink} className="underline" target="_blank">{t("программы лояльности")}</Link>}
                   </p>
                 )}
                 <label className="flex items-start gap-2">
                   <input type="checkbox" checked={privacy} onChange={(e) => setPrivacy(e.target.checked)} className="mt-0.5 accent-black" />
-                  <span>Принимаю условия {cfg.consentPrivacyLink ? <Link href={cfg.consentPrivacyLink} className="underline" target="_blank">программы лояльности</Link> : "программы лояльности"}</span>
+                  <span>{acceptBefore}{loyaltyLink}{acceptAfter}</span>
                 </label>
                 <label className="flex items-start gap-2">
                   <input type="checkbox" checked={marketing} onChange={(e) => setMarketing(e.target.checked)} className="mt-0.5 accent-black" />
                   <span>
-                    {cfg.consentMarketing ?? "Даю своё согласие на получение рекламной рассылки"}{" "}
-                    {cfg.consentMarketingLink && <Link href={cfg.consentMarketingLink} className="underline" target="_blank">(политика конфиденциальности)</Link>}
+                    {cfg.consentMarketing ? t(cfg.consentMarketing) : t("Даю своё согласие на получение рекламной рассылки")}{" "}
+                    {cfg.consentMarketingLink && <Link href={cfg.consentMarketingLink} className="underline" target="_blank">{t("(политика конфиденциальности)")}</Link>}
                   </span>
                 </label>
-                {error && <p className={cn("text-error text-xsm")}>{error}</p>}
+                {error && <p className={cn("text-error text-xsm")}>{t(error)}</p>}
               </div>
             </form>
           )}

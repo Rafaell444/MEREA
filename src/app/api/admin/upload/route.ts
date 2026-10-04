@@ -40,7 +40,7 @@ export async function POST(req: Request) {
   }
 
   let url: string;
-  // Vercel Blob token: default name, or the custom "MEREA" prefix chosen when the store was created
+  // Vercel Blob token: default name, or the custom "MEREY" prefix chosen when the store was created
   const blobToken = process.env.BLOB_READ_WRITE_TOKEN ?? process.env.MEREA_READ_WRITE_TOKEN;
   if (blobToken) {
     // Vercel: serverless filesystem is read-only, store in Vercel Blob

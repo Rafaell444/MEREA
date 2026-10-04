@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
@@ -12,14 +12,16 @@ import type { PromoBadge as BadgeDef } from "@/lib/cms/content";
 import { PromoBadge } from "@/components/ui/Badge";
 import Price from "@/components/ui/Price";
 import { resolveBadges } from "@/lib/badges";
-import { cn, colorsLabel } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useCart } from "@/store/cart";
 import { useWishlist } from "@/store/wishlist";
 import { useUI } from "@/store/ui";
+import { useT } from "@/lib/i18n/client";
 
 type Props = { product: ProductCard; badges: BadgeDef[]; priority?: boolean; className?: string; sizes?: string };
 
-export default function ProductTile({ product, badges, priority, className, sizes = "(max-width: 640px) 50vw, 25vw" }: Props) {
+export default function ProductTile({ product, badges, priority, className, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" }: Props) {
+  const t = useT();
   const [hover, setHover] = useState(false);
   const add = useCart((s) => s.add);
   const openUI = useUI((s) => s.open);
@@ -51,10 +53,10 @@ export default function ProductTile({ product, badges, priority, className, size
                   <Image src={img.url} alt={img.alt ?? product.title} fill sizes={sizes} priority={priority && i === 0} className="object-cover transition-transform duration-700 group-hover/tile:scale-[1.02]" />
                 </SwiperSlide>
               ))}
-              <button aria-label="Предыдущее фото" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className={cn(`tile-prev-${cssId(product.id)}`, "absolute left-2 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-black opacity-0 transition-opacity duration-300 group-hover/tile:opacity-100 sm:flex")}>
+              <button aria-label={t("Предыдущее фото")} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className={cn(`tile-prev-${cssId(product.id)}`, "absolute left-2 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-black opacity-0 transition-opacity duration-300 group-hover/tile:opacity-100 sm:flex")}>
                 <ChevronLeft size={16} />
               </button>
-              <button aria-label="Следующее фото" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className={cn(`tile-next-${cssId(product.id)}`, "absolute right-2 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-black opacity-0 transition-opacity duration-300 group-hover/tile:opacity-100 sm:flex")}>
+              <button aria-label={t("Следующее фото")} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className={cn(`tile-next-${cssId(product.id)}`, "absolute right-2 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-black opacity-0 transition-opacity duration-300 group-hover/tile:opacity-100 sm:flex")}>
                 <ChevronRight size={16} />
               </button>
             </Swiper>
@@ -66,7 +68,7 @@ export default function ProductTile({ product, badges, priority, className, size
 
           {/* Wishlist heart */}
           <button
-            aria-label={wished ? "Убрать из избранного" : "В избранное"}
+            aria-label={wished ? t("Убрать из избранного") : t("В избранное")}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWish(product.handle); }}
             className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 opacity-0 transition-all duration-300 hover:scale-110 group-hover/tile:opacity-100 max-sm:opacity-100"
           >
@@ -77,21 +79,21 @@ export default function ProductTile({ product, badges, priority, className, size
           {resolved.length > 0 && (
             <div className={cn("absolute bottom-4 left-4 z-[5] flex max-w-[calc(100%-32px)] flex-col gap-1 leading-none transition-opacity duration-150", hover && "sm:opacity-0")}>
               {resolved.map((b) => (
-                <PromoBadge key={b.tag} label={b.label} textColor={b.textColor} bgColor={b.bgColor} />
+                <PromoBadge key={b.tag} label={t(b.label)} textColor={b.textColor} bgColor={b.bgColor} />
               ))}
             </div>
           )}
 
           {/* Hover size picker (desktop) */}
           <div className={cn("absolute bottom-4 left-4 z-[6] hidden w-[calc(100%-32px)] rounded-xs bg-white p-4 transition-opacity duration-150 ease-linear sm:block", hover ? "opacity-100" : "pointer-events-none opacity-0")}>
-            <p className="mb-2 text-center text-xsm text-black">Выбери размер</p>
+            <p className="mb-2 text-center text-xsm text-black">{t("Выбери размер")}</p>
             <ul className="flex flex-wrap justify-center">
               {product.sizes.map((s) => (
                 <li key={s.variantId}>
                   <button
                     type="button"
                     onClick={(e) => quickAdd(e, s)}
-                    title={s.stockStatus === "outOfStock" ? "Нет в наличии — уведомить" : s.stockStatus === "lowStock" ? "Осталось мало" : "В наличии"}
+                    title={s.stockStatus === "outOfStock" ? t("Нет в наличии — уведомить") : s.stockStatus === "lowStock" ? t("Осталось мало") : t("В наличии")}
                     className={cn("flex h-8 items-center gap-1 rounded-sm px-2 text-xsm font-medium transition-colors hover:bg-off-white", s.stockStatus === "outOfStock" ? "text-gray-400" : "text-black")}
                   >
                     {s.label}
@@ -105,7 +107,7 @@ export default function ProductTile({ product, badges, priority, className, size
         </div>
 
         <div className="flex flex-col gap-1 px-1">
-          {product.colorsCount > 0 && <p className="text-xsm text-gray-500">{colorsLabel(product.colorsCount)}</p>}
+          {product.colorsCount > 0 && <p className="text-xsm text-gray-500">{t("Цветов: {n}", { n: product.colorsCount })}</p>}
           <p className="line-clamp-2 text-sm text-black">{product.title}</p>
           <Price price={product.price} compareAt={product.compareAtPrice} />
         </div>

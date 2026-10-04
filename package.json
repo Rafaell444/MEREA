@@ -19,7 +19,8 @@
     "db:sqlite": "prisma generate --schema prisma/schema.sqlite.prisma && prisma db push --schema prisma/schema.sqlite.prisma && tsx prisma/seed.ts",
     "validate:graphql": "node scripts/validate-graphql.mjs",
     "shopify:import-catalog": "node scripts/shopify-import-catalog.mjs",
-    "shopify:publish": "node scripts/shopify-publish.mjs"
+    "shopify:publish": "node scripts/shopify-publish.mjs",
+    "shopify:metafields": "node scripts/shopify-metafield-definitions.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
